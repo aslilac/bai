@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     strategy:
@@ -25,12 +25,17 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust-version }}
-          components: clippy, rustfmt
           default: true
 
-      - run: cargo test
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/
+            ./build/
+          key: test-cargo-${{matrix.rust-version}}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: test-cargo-${{matrix.rust-version}}-
 
-      - run: cargo run
+      - run: cargo test
 
   lint:
     runs-on: ubuntu-latest
@@ -43,6 +48,14 @@ jobs:
           toolchain: stable
           components: clippy, rustfmt
           default: true
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/
+            ./build/
+          key: lint-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: lint-cargo-
 
       - run: cargo fmt -- --check
 

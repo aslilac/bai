@@ -89,3 +89,19 @@ async fn main() -> anyhow::Result<()> {
 
 	Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+
+	#[test]
+	fn test_parse_file_name() {
+		let (file_path, url) = parse_file_name("Cargo.toml").unwrap();
+		assert_eq!(file_path, "Cargo.toml");
+		assert_eq!(url, BASE.join("Cargo.toml").unwrap());
+
+		let (file_path, url) = parse_file_name("Cargo.toml@rust").unwrap();
+		assert_eq!(file_path, "Cargo.toml");
+		assert_eq!(url, BASE.join("@rust/Cargo.toml").unwrap());
+	}
+}
