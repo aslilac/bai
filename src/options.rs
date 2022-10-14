@@ -18,14 +18,30 @@ where
 
 		let (flags, files) = args.partition::<Vec<_>, _>(|arg| {
 			let arg = arg.as_ref();
-			(arg.len() > 2 && arg.starts_with('-')) || (arg.len() > 3 && arg.starts_with("--"))
+			(arg.len() >= 2 && arg.starts_with('-')) || (arg.len() >= 3 && arg.starts_with("--"))
 		});
 
 		for flag in flags {
 			let flag = flag.as_ref();
 			match flag {
-				"-v" | "-V" | "--version" => {
+				"-v" | "-V" | "-version" | "--version" => {
 					println!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
+					exit(0);
+				}
+				"-h" | "-help" | "--help" => {
+					println!(
+						"{} {}",
+						env!("CARGO_PKG_NAME").bold().magenta(),
+						env!("CARGO_PKG_VERSION").bold().magenta()
+					);
+					println!();
+					println!("usage: okie [options] [/group...] [file...]");
+					println!("       okie /gleam    create files for a Gleam project");
+					println!("       okie /rust     create files for a Rust project");
+					println!("       okie /ts       create files for a TypeScript project");
+					println!();
+					println!("  -h, --help          show this help message");
+					println!("  -v, --version       show version information");
 					exit(0);
 				}
 				_ => {

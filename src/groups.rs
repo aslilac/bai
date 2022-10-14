@@ -10,7 +10,7 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'stati
 			"gleam.toml",
 			"src/$name.gleam",
 		]),
-		"/rust" => Ok(&[
+		"/rs" | "/rust" => Ok(&[
 			".cargo/config.toml",
 			".github/workflows/main.yml@rust",
 			".gitignore",
