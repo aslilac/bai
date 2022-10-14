@@ -8,6 +8,7 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'stati
 			"CODE_OF_CONDUCT.md",
 			"LICENSE",
 			"gleam.toml",
+			"src/$name.gleam",
 		]),
 		"/rust" => Ok(&[
 			".cargo/config.toml",
@@ -17,6 +18,7 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'stati
 			"Cargo.toml",
 			"CODE_OF_CONDUCT.md",
 			"LICENSE",
+			"src/main.rs",
 		]),
 		"/ts" => Ok(&[
 			".github/workflows/main.yml",

@@ -57,6 +57,7 @@ where
 		}
 	}
 
+	let file_path = file_path.replace("$name", &ctx.name);
 	fs::write(file_path, file_content)?;
 
 	Ok(())
@@ -80,7 +81,7 @@ async fn main() -> anyhow::Result<()> {
 		tasks.spawn(async move {
 			_ = fetch_file(&file, ctx)
 				.await
-				.map_err(|err| println!("{} {}", Colorize::red("error:"), err));
+				.map_err(|err| eprintln!("{} {}", "error:".red(), err));
 		});
 	}
 

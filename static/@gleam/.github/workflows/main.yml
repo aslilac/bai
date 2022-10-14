@@ -2,9 +2,9 @@ name: main
 
 on:
   push:
-    branches: [main]
+    branches: ["main"]
   pull_request:
-    branches: [main]
+    branches: ["**"]
 
 concurrency:
   group: main-${{ github.ref }}
@@ -20,7 +20,7 @@ jobs:
       - uses: erlef/setup-beam@v1
         with:
           otp-version: "25.0"
-          gleam-version: "0.22.1"
+          gleam-version: "0.23.0"
 
       - run: gleam format --check
 
