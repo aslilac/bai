@@ -11,10 +11,8 @@ mod options;
 use options::Options;
 
 const BASE: Lazy<reqwest::Url> = Lazy::new(|| {
-	reqwest::Url::parse(
-		"https://raw.githubusercontent.com/aslilac/mckayla/main/packages/create-ok/static/",
-	)
-	.expect("invalid base URL")
+	reqwest::Url::parse("https://raw.githubusercontent.com/aslilac/okie/main/static/")
+		.expect("invalid base URL")
 });
 
 #[derive(Clone, Debug)]
