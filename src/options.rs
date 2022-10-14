@@ -28,7 +28,7 @@ where
 					println!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
 					exit(0);
 				}
-				"-h" | "-help" | "--help" => {
+				"-h" | "-help" | "--help" | "-?" => {
 					println!(
 						"{} {}",
 						env!("CARGO_PKG_NAME").bold().magenta(),
