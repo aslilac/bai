@@ -1,0 +1,13 @@
+[package]
+name = "{{name}}"
+version = "0.0.0"
+authors = ["McKayla Washburn <mckayla@hey.com>"]
+description = ""
+keywords = []
+license = "MIT"
+homepage = "https://github.com/aslilac/{{name}}"
+repository = "https://github.com/aslilac/{{name}}"
+documentation = "https://docs.rs/{{name}}"
+edition = "2021"
+
+[dependencies]

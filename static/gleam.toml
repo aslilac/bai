@@ -1,0 +1,11 @@
+name = "{{name}}"
+version = "0.0.0"
+licences = ["MIT"]
+description = ""
+repository = { type = "github", user = "aslilac", repo = "{{name}}" }
+
+[dependencies]
+gleam_stdlib = "~> 0.21"
+
+[dev-dependencies]
+gleeunit = "~> 0.6"

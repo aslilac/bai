@@ -1,0 +1,33 @@
+---
+BasedOnStyle: LLVM
+AlignAfterOpenBracket: AlwaysBreak
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Always
+AlwaysBreakTemplateDeclarations: Yes
+BinPackArguments: false
+BinPackParameters: false
+BreakBeforeBraces: Attach
+ColumnLimit: 90
+ContinuationIndentWidth: 4
+DerivePointerAlignment: false
+IndentWidth: 4
+IndentWrappedFunctionNames: false
+InsertTrailingCommas: Wrapped
+KeepEmptyLinesAtTheStartOfBlocks: false
+# LambdaBodyIndentation: Signature
+MacroBlockBegin: ""
+MacroBlockEnd: ""
+MaxEmptyLinesToKeep: 1
+ObjCBinPackProtocolList: Auto
+ObjCBlockIndentWidth: 4
+PointerAlignment: Left
+# ReferenceAlignment: Pointer
+# SortIncludes: CaseInsensitive
+SpaceAfterCStyleCast: true
+Standard: Latest
+TabWidth: 4
+UseTab: AlignWithSpaces
+---
+
