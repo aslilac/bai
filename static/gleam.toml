@@ -5,7 +5,7 @@ description = ""
 repository = { type = "github", user = "aslilac", repo = "{{name}}" }
 
 [dependencies]
-gleam_stdlib = "~> 0.21"
+gleam_stdlib = "~> 0.23"
 
 [dev-dependencies]
 gleeunit = "~> 0.6"
