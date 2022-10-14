@@ -7,6 +7,7 @@ use std::path::Path;
 use std::sync::Arc;
 use tokio::task;
 
+mod groups;
 mod options;
 use options::Options;
 
