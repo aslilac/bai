@@ -36,7 +36,11 @@ fn parse_file_name(file: &str) -> anyhow::Result<(&str, reqwest::Url)> {
 	Ok((file_path, base.join(&file_path)?))
 }
 
-async fn fetch_file(file: &str, ctx: Arc<Context>) -> anyhow::Result<()> {
+async fn fetch_file<C>(file: &str, ctx: C) -> anyhow::Result<()>
+where
+	C: AsRef<Context>,
+{
+	let ctx = ctx.as_ref();
 	let (file_path, url) = parse_file_name(file)?;
 
 	// Fetch file, fill in template variables
