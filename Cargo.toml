@@ -1,6 +1,6 @@
 [package]
 name = "okie"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["McKayla Washburn <mckayla@hey.com>"]
 description = "Create common files from a collection of templates"
 keywords = []
