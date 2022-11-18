@@ -35,7 +35,7 @@
 		"dev": "tsc -p tsconfig.build.json -w",
 		"fmt": "prettier --write .",
 		"lint": "eslint .",
-		"prepack": "npm run build -s",
+		"prepack": "$npm_execpath run build -s",
 		"test": "jest",
 		"type-check": "tsc -p . --noEmit"
 	}
