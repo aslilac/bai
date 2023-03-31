@@ -1,0 +1,7 @@
+usage: okie [options] [/group...] [file...]
+       okie /gleam    create files for a Gleam project
+       okie /rust     create files for a Rust project
+       okie /ts       create files for a TypeScript project
+
+  -h, --help          show this help message
+  -v, --version       show version information

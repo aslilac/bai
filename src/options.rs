@@ -34,14 +34,7 @@ where
 						env!("CARGO_PKG_NAME").bold().magenta(),
 						env!("CARGO_PKG_VERSION").bold().magenta()
 					);
-					println!();
-					println!("usage: okie [options] [/group...] [file...]");
-					println!("       okie /gleam    create files for a Gleam project");
-					println!("       okie /rust     create files for a Rust project");
-					println!("       okie /ts       create files for a TypeScript project");
-					println!();
-					println!("  -h, --help          show this help message");
-					println!("  -v, --version       show version information");
+					println!("{}", include_str!("./help.txt"));
 					exit(0);
 				}
 				_ => {
