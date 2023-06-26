@@ -20,7 +20,7 @@ jobs:
       - uses: erlef/setup-beam@v1
         with:
           otp-version: "25.0"
-          gleam-version: "0.23.0"
+          gleam-version: "0.30.0"
 
       - run: gleam format --check
 
