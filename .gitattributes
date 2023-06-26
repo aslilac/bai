@@ -1,1 +1,1 @@
-static/ -linguist-detectable
+static/** -linguist-detectable
