@@ -19,6 +19,8 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'stati
 			"CODE_OF_CONDUCT.md",
 			"LICENSE",
 			"src/main.rs",
+			"tests/main.rs",
+			"tests/setup.rs",
 		]),
 		"/ts" => Ok(&[
 			".github/workflows/main.yml",
