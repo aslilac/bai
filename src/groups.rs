@@ -18,6 +18,7 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'stati
 			"Cargo.toml",
 			"CODE_OF_CONDUCT.md",
 			"LICENSE",
+			"rust-toolchain.toml",
 			"src/main.rs",
 			"tests/main.rs",
 			"tests/setup.rs",
