@@ -1,4 +1,5 @@
 use anyhow::anyhow;
+use chrono::Datelike;
 use colored::Colorize;
 use once_cell::sync::Lazy;
 use regex::Regex;
@@ -109,6 +110,13 @@ async fn main() -> anyhow::Result<()> {
 			context.insert("git.config.user.email".to_string(), stdout);
 		}
 	};
+
+	if !context.contains_key(&"date.year".to_string()) {
+		context.insert(
+			"date.year".to_string(),
+			chrono::Local::now().year().to_string(),
+		);
+	}
 
 	let context = Arc::new(context);
 	let mut tasks = task::JoinSet::new();
