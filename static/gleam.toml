@@ -1,11 +1,11 @@
-name = "{{name}}"
+name = "{{ name }}"
 version = "0.0.0"
 licences = ["MIT"]
 description = ""
-repository = { type = "github", user = "aslilac", repo = "{{name}}" }
+repository = { type = "github", user = "{{ github.username }}", repo = "{{ name }}" }
 
 [dependencies]
-gleam_stdlib = "~> 0.28"
+gleam_stdlib = "~> 0.30"
 
 [dev-dependencies]
 gleeunit = "~> 0.10"

@@ -1,13 +1,13 @@
 [package]
-name = "{{name}}"
+name = "{{ name }}"
 version = "0.0.0"
-authors = ["McKayla Washburn <mckayla@hey.com>"]
+authors = ["{{ git.config.user.name }} <{{ git.config.user.email }}>"]
 description = ""
 keywords = []
 license = "MIT"
-homepage = "https://github.com/aslilac/{{name}}"
-repository = "https://github.com/aslilac/{{name}}"
-documentation = "https://docs.rs/{{name}}"
+homepage = "https://github.com/{{ github.username }}/{{ name }}"
+repository = "https://github.com/{{ github.username }}/{{ name }}"
+documentation = "https://docs.rs/{{ name }}"
 edition = "2021"
 
 [dependencies]

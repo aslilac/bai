@@ -1,57 +1,95 @@
+use anyhow::anyhow;
 use colored::Colorize;
+use once_cell::sync::Lazy;
+use regex::Regex;
 use std::collections::BTreeSet;
+use std::collections::HashMap;
 use std::process::exit;
 
 use crate::groups::expand_group;
+use crate::IDENT;
+
+static VARIABLE_NAME: Lazy<Regex> = Lazy::new(|| Regex::new(&format!("^{}$", *IDENT)).unwrap());
 
 #[derive(Clone, Debug)]
 pub struct Options {
 	pub files: BTreeSet<String>,
+	pub context: HashMap<String, String>,
 }
 
-impl<S> FromIterator<S> for Options
+impl<S, const N: usize> TryFrom<&[S; N]> for Options
 where
 	S: AsRef<str>,
 {
-	fn from_iter<I: IntoIterator<Item = S>>(args: I) -> Self {
-		let args = args.into_iter();
+	type Error = anyhow::Error;
 
-		let (flags, files) = args.partition::<Vec<_>, _>(|arg| {
-			let arg = arg.as_ref();
-			(arg.len() >= 2 && arg.starts_with('-')) || (arg.len() >= 3 && arg.starts_with("--"))
-		});
+	fn try_from(args: &[S; N]) -> Result<Self, Self::Error> {
+		Options::try_from(&args[..])
+	}
+}
 
-		for flag in flags {
-			let flag = flag.as_ref();
-			match flag {
-				"-v" | "-V" | "-version" | "--version" => {
-					println!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
+impl<S> TryFrom<&[S]> for Options
+where
+	S: AsRef<str>,
+{
+	type Error = anyhow::Error;
+
+	fn try_from(args: &[S]) -> Result<Self, Self::Error> {
+		if args.len() == 1 {
+			match args[0].as_ref() {
+				"-h" | "-help" | "--help" | "-?" | "help" => {
+					println!("get some help");
 					exit(0);
 				}
-				"-h" | "-help" | "--help" | "-?" => {
+				"-v" | "-V" | "-version" | "--version" | "version" => {
 					println!(
 						"{} {}",
-						env!("CARGO_PKG_NAME").bold().magenta(),
-						env!("CARGO_PKG_VERSION").bold().magenta()
+						env!("CARGO_PKG_NAME").bright_magenta().bold(),
+						env!("CARGO_PKG_VERSION").bold()
 					);
-					println!("{}", include_str!("./help.txt"));
 					exit(0);
 				}
+				_ => (),
+			}
+		}
+
+		let mut args = args.into_iter();
+		let mut files = Vec::new();
+		let mut context = HashMap::new();
+
+		while let Some(arg) = args.next() {
+			let arg = arg.as_ref();
+			match arg {
+				"-d" | "-D" | "-define" | "--define" => {
+					let definition = args
+						.next()
+						.ok_or_else(|| anyhow!("expected a definition after {}", arg))?
+						.as_ref();
+
+					let (key, value) = definition.split_once('=').ok_or_else(|| {
+						anyhow!("invalid definition \"{}\", must contain a \"=\" to separate the name and value", definition)
+					})?;
+					VARIABLE_NAME
+						.find_at(key, 0)
+						.ok_or_else(|| anyhow!("key \"{}\" is invalid", key))?;
+					context.insert(key.to_string(), value.to_string());
+				}
 				_ => {
-					eprintln!(
-						"{} {}",
-						"error:".red(),
-						format!("unrecognized flag: {}", flag)
-					);
-					exit(1);
+					if (arg.len() >= 2 && arg.starts_with('-'))
+						|| arg.len() >= 3 && arg.starts_with("--")
+					{
+						return Err(anyhow!("unrecognized option: {}", arg));
+					} else {
+						files.push(arg);
+					};
 				}
 			}
 		}
 
 		let files = files
-			.iter()
+			.into_iter()
 			.map(|arg| {
-				if arg.as_ref().starts_with("/") {
+				if arg.starts_with("/") {
 					// TODO: use `inspect_err` and `unwrap_or_default` when that stabilizes
 					// https://github.com/rust-lang/rust/issues/91345
 					return expand_group(arg)
@@ -64,12 +102,12 @@ where
 						.collect();
 				}
 
-				vec![arg.as_ref().to_string()]
+				vec![arg.to_string()]
 			})
 			.flatten()
 			.collect();
 
-		Options { files }
+		Ok(Options { files, context })
 	}
 }
 
@@ -79,7 +117,27 @@ mod tests {
 
 	#[test]
 	fn groups() {
-		let options = ["/gleam"].into_iter().collect::<Options>();
+		let options = Options::try_from(&["/gleam"]).unwrap();
 		assert!(options.files.contains("gleam.toml"));
+	}
+
+	#[test]
+	fn parse_identifier() {
+		assert!(VARIABLE_NAME.find_at("a", 0).is_some());
+		assert!(VARIABLE_NAME.find_at("a.b", 0).is_some());
+		assert!(VARIABLE_NAME.find_at("a.", 0).is_none());
+		assert!(VARIABLE_NAME.find_at("hello.friend", 0).is_some());
+		assert!(VARIABLE_NAME.find_at("hello.friend-name", 0).is_some());
+		assert!(VARIABLE_NAME.find_at("hello.friend_name", 0).is_some());
+		assert!(VARIABLE_NAME.find_at("hello.friend-", 0).is_none());
+		assert!(VARIABLE_NAME.find_at("hello.friend_", 0).is_none());
+		assert!(VARIABLE_NAME.find_at("hello.friend_name1", 0).is_some());
+		assert!(VARIABLE_NAME.find_at("hello.0", 0).is_some());
+		assert!(VARIABLE_NAME.find_at("hello.0a", 0).is_none());
+		assert!(VARIABLE_NAME.find_at("hello.01", 0).is_none());
+		assert!(VARIABLE_NAME.find_at("hello.10", 0).is_some());
+		assert!(VARIABLE_NAME.find_at("0.1", 0).is_none());
+		assert!(VARIABLE_NAME.find_at("0a.1", 0).is_none());
+		assert!(VARIABLE_NAME.find_at("a0.1", 0).is_some());
 	}
 }

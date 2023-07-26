@@ -3,7 +3,7 @@ use std::process::Command;
 
 mod setup;
 
-const EXE: &str = "./build/release/{{name}}";
+const EXE: &str = "./build/release/{{ name }}";
 
 #[test]
 fn hello() {
