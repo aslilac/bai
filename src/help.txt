@@ -5,3 +5,10 @@ usage: okie [options] [/group...] [file...]
 
   -h, --help          show this help message
   -v, --version       show version information
+
+      --set    <key>=<value> [...]   set variables persistently for use in templates
+  -d, --define <key>=<value>         define a variable for use in templates
+
+more examples:
+       okie -set github.username=aslilac
+       okie LICENSE -define date.year=2024

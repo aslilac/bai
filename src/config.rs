@@ -17,8 +17,9 @@ impl Config {
 	pub fn init() -> anyhow::Result<Self> {
 		let mut buf = String::with_capacity(100);
 		let stdin = io::stdin();
-		write!(io::stdout(), "github.username? ")?;
-		io::stdout().flush().unwrap();
+		let mut stdout = io::stdout();
+		write!(stdout, "github.username? ")?;
+		stdout.flush().unwrap();
 		stdin.read_line(&mut buf).unwrap();
 		let github_username = buf.trim().to_string();
 
@@ -59,22 +60,14 @@ impl Config {
 
 		let content = &fs::read_to_string(&config_file).unwrap_or_default();
 		let mut config = content.parse::<toml_edit::Document>()?;
-		// let mut context = match config["context"] {
-		//   toml_edit::Item::None => toml_edit::Table::new(),
-		//   toml_edit::Item::Table(table) => table,
-		// }.clone().into_table().unwrap();
-
 		if !config.contains_table("context") {
 			config["context"] = toml_edit::Item::Table(toml_edit::Table::new());
 		}
 
 		for (key, value) in values.into_iter() {
 			config["context"][key.as_ref()] = toml_edit::value(value.as_ref());
-			// config["context"].as_table_mut().unwrap().
 		}
 
-		// config.sort_values();
-		// config.insert("context", toml_edit::Item::Table(context));
 		config["context"].as_table_mut().unwrap().sort_values();
 		fs::write(&config_file, config.to_string())?;
 		Ok(())

@@ -36,12 +36,18 @@ where
 	type Error = anyhow::Error;
 
 	fn try_from(args: &[S]) -> Result<Self, Self::Error> {
+		let help = || {
+			println!("{}", include_str!("./help.txt"));
+			exit(0);
+		};
+
+		if args.len() == 0 {
+			help();
+		}
+
 		if args.len() == 1 {
 			match args[0].as_ref() {
-				"-h" | "-help" | "--help" | "-?" | "help" => {
-					println!("get some help");
-					exit(0);
-				}
+				"-h" | "-help" | "--help" | "-?" | "help" => help(),
 				"-v" | "-V" | "-version" | "--version" | "version" => {
 					println!(
 						"{} {}",
@@ -52,6 +58,25 @@ where
 				}
 				_ => (),
 			}
+		}
+
+		if matches!(args[0].as_ref(), "-set" | "--set") {
+			let definitions = args.into_iter().skip(1)
+			.filter_map(|definition| {
+				let definition = definition.as_ref();
+				let Some((key, value)) = definition.split_once('=') else {
+					eprintln!("{} invalid definition \"{}\", must contain a \"=\" to separate the name and value", "warning:".yellow(), definition);
+					return None;
+				};
+				let Some(_) = VARIABLE_NAME.find_at(key, 0) else {
+					eprintln!("{} key \"{}\" is invalid", "warning:".yellow(), key);
+					return None;
+				};
+				Some((key, value))
+			});
+
+			Config::set_context(definitions)?;
+			exit(0);
 		}
 
 		let mut args = args.into_iter();
@@ -73,21 +98,6 @@ where
 					VARIABLE_NAME
 						.find_at(key, 0)
 						.ok_or_else(|| anyhow!("key \"{}\" is invalid", key))?;
-					context.insert(key.to_string(), value.to_string());
-				}
-				"-set" | "--set" => {
-					let definition = args
-						.next()
-						.ok_or_else(|| anyhow!("expected a definition after {}", arg))?
-						.as_ref();
-
-					let (key, value) = definition.split_once('=').ok_or_else(|| {
-						anyhow!("invalid definition \"{}\", must contain a \"=\" to separate the name and value", definition)
-					})?;
-					VARIABLE_NAME
-						.find_at(key, 0)
-						.ok_or_else(|| anyhow!("key \"{}\" is invalid", key))?;
-					Config::set_context([(key, value)])?;
 					context.insert(key.to_string(), value.to_string());
 				}
 				_ => {
