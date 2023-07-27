@@ -1,4 +1,4 @@
-use anyhow::anyhow;
+use etcetera::BaseStrategy;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashMap;
@@ -6,6 +6,7 @@ use std::fs;
 use std::io;
 use std::io::Write;
 use std::path::Path;
+use std::path::PathBuf;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Config {
@@ -14,6 +15,14 @@ pub struct Config {
 }
 
 impl Config {
+	pub fn file_path() -> anyhow::Result<PathBuf> {
+		Ok(
+			etcetera::choose_base_strategy()?
+				.config_dir()
+				.join("okie.toml"),
+		)
+	}
+
 	pub fn init() -> anyhow::Result<Self> {
 		let mut buf = String::with_capacity(100);
 		let stdin = io::stdin();
@@ -24,8 +33,7 @@ impl Config {
 		let github_username = buf.trim().to_string();
 
 		if !github_username.is_empty() {
-			Self::set_context([("github.username", &github_username)])
-				.expect("failed to update config");
+			Self::set_context([("github.username", &github_username)]).expect("failed to update config");
 		}
 
 		Ok(Config {
@@ -34,10 +42,7 @@ impl Config {
 	}
 
 	pub fn load() -> anyhow::Result<Self> {
-		// let xdg_base = xdg::BaseDirectories::with_prefix("okie")?;
-		let xdg_base = xdg::BaseDirectories::new()?;
-		let config_file = xdg_base.get_config_file(Path::new("okie.toml"));
-
+		let config_file = Self::file_path()?;
 		if !config_file.exists() {
 			return Self::init();
 		}
@@ -52,11 +57,7 @@ impl Config {
 		K: AsRef<str>,
 		V: AsRef<str>,
 	{
-		// let xdg_base = xdg::BaseDirectories::with_prefix("okie")?;
-		let xdg_base = xdg::BaseDirectories::new()?;
-		let config_file = xdg_base
-			.place_config_file(Path::new("okie.toml"))
-			.map_err(|err| anyhow!(err))?;
+		let config_file = Self::file_path()?;
 
 		let content = &fs::read_to_string(&config_file).unwrap_or_default();
 		let mut config = content.parse::<toml_edit::Document>()?;
@@ -66,6 +67,11 @@ impl Config {
 
 		for (key, value) in values.into_iter() {
 			config["context"][key.as_ref()] = toml_edit::value(value.as_ref());
+		}
+
+		let parent_exists = config_file.parent().map(Path::exists).unwrap_or(true);
+		if !parent_exists {
+			fs::create_dir_all(&config_file.parent().unwrap())?;
 		}
 
 		config["context"].as_table_mut().unwrap().sort_values();

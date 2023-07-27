@@ -6,9 +6,11 @@ usage: okie [options] [/group...] [file...]
   -h, --help          show this help message
   -v, --version       show version information
 
+      --get-config-path              prints the location of okie.toml to stdout
       --set    <key>=<value> [...]   set variables persistently for use in templates
   -d, --define <key>=<value>         define a variable for use in templates
 
 more examples:
+       okie -get-config-path
        okie -set github.username=aslilac
        okie LICENSE -define date.year=2024

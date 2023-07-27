@@ -56,6 +56,10 @@ where
 					);
 					exit(0);
 				}
+				"-config" | "--config" | "-get-config-path" | "--get-config-path" => {
+					println!("{}", Config::file_path()?.display());
+					exit(0);
+				}
 				_ => (),
 			}
 		}
@@ -93,7 +97,10 @@ where
 						.as_ref();
 
 					let (key, value) = definition.split_once('=').ok_or_else(|| {
-						anyhow!("invalid definition \"{}\", must contain a \"=\" to separate the name and value", definition)
+						anyhow!(
+							"invalid definition \"{}\", must contain a \"=\" to separate the name and value",
+							definition
+						)
 					})?;
 					VARIABLE_NAME
 						.find_at(key, 0)
@@ -101,9 +108,7 @@ where
 					context.insert(key.to_string(), value.to_string());
 				}
 				_ => {
-					if (arg.len() >= 2 && arg.starts_with('-'))
-						|| arg.len() >= 3 && arg.starts_with("--")
-					{
+					if (arg.len() >= 2 && arg.starts_with('-')) || arg.len() >= 3 && arg.starts_with("--") {
 						return Err(anyhow!("unrecognized option: {}", arg));
 					} else {
 						files.push(arg);
