@@ -20,7 +20,6 @@
 	],
 	"dependencies": {},
 	"devDependencies": {
-		"@mckayla/prettier": "^1.0.5",
 		"@mckayla/tsconfig": "^1.0.3",
 		"@types/jest": "^29.5.0",
 		"eslint": "^8.45.0",
