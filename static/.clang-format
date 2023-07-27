@@ -10,9 +10,9 @@ BinPackArguments: false
 BinPackParameters: false
 BreakBeforeBraces: Attach
 ColumnLimit: 90
-ContinuationIndentWidth: 4
+ContinuationIndentWidth: 2
 DerivePointerAlignment: false
-IndentWidth: 4
+IndentWidth: 2
 IndentWrappedFunctionNames: false
 InsertTrailingCommas: Wrapped
 KeepEmptyLinesAtTheStartOfBlocks: false
@@ -21,13 +21,12 @@ MacroBlockBegin: ""
 MacroBlockEnd: ""
 MaxEmptyLinesToKeep: 1
 ObjCBinPackProtocolList: Auto
-ObjCBlockIndentWidth: 4
+ObjCBlockIndentWidth: 2
 PointerAlignment: Left
 # ReferenceAlignment: Pointer
 # SortIncludes: CaseInsensitive
 SpaceAfterCStyleCast: true
 Standard: Latest
-TabWidth: 4
+TabWidth: 2
 UseTab: AlignWithSpaces
 ---
-

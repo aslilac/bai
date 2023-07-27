@@ -2,7 +2,7 @@ name = "{{ name }}"
 version = "0.0.0"
 licences = ["MIT"]
 description = ""
-repository = { type = "github", user = "{{ github.username }}", repo = "{{ name }}" }
+repository = { type = "github", user = "{{ github.owner }}", repo = "{{ name }}" }
 
 [dependencies]
 gleam_stdlib = "~> 0.30"

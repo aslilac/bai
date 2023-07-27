@@ -5,8 +5,8 @@ authors = ["{{ git.config.user.name }} <{{ git.config.user.email }}>"]
 description = ""
 keywords = []
 license = "MIT"
-homepage = "https://github.com/{{ github.username }}/{{ name }}"
-repository = "https://github.com/{{ github.username }}/{{ name }}"
+homepage = "https://github.com/{{ github.owner }}/{{ name }}"
+repository = "https://github.com/{{ github.owner }}/{{ name }}"
 documentation = "https://docs.rs/{{ name }}"
 edition = "2021"
 

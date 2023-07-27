@@ -1,1 +1,1 @@
-github: ["aslilac"]
+github: ["{{ github.username }}"]

@@ -6,6 +6,7 @@ use std::collections::BTreeSet;
 use std::collections::HashMap;
 use std::process::exit;
 
+use crate::config::Config;
 use crate::groups::expand_group;
 use crate::IDENT;
 
@@ -72,6 +73,21 @@ where
 					VARIABLE_NAME
 						.find_at(key, 0)
 						.ok_or_else(|| anyhow!("key \"{}\" is invalid", key))?;
+					context.insert(key.to_string(), value.to_string());
+				}
+				"-set" | "--set" => {
+					let definition = args
+						.next()
+						.ok_or_else(|| anyhow!("expected a definition after {}", arg))?
+						.as_ref();
+
+					let (key, value) = definition.split_once('=').ok_or_else(|| {
+						anyhow!("invalid definition \"{}\", must contain a \"=\" to separate the name and value", definition)
+					})?;
+					VARIABLE_NAME
+						.find_at(key, 0)
+						.ok_or_else(|| anyhow!("key \"{}\" is invalid", key))?;
+					Config::set_context([(key, value)])?;
 					context.insert(key.to_string(), value.to_string());
 				}
 				_ => {

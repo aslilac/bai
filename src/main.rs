@@ -1,4 +1,3 @@
-use anyhow::anyhow;
 use chrono::Datelike;
 use colored::Colorize;
 use once_cell::sync::Lazy;
@@ -11,9 +10,11 @@ use std::process::Command;
 use std::sync::Arc;
 use tokio::task;
 
+mod config;
 mod groups;
 mod options;
 mod regext;
+use config::Config;
 use options::Options;
 
 static BASE: Lazy<reqwest::Url> = Lazy::new(|| {
@@ -74,40 +75,57 @@ async fn main() -> anyhow::Result<()> {
 	let Options { files, mut context } =
 		Options::try_from(&*env::args().skip(1).collect::<Vec<_>>())?;
 
+	let config = Config::load()?;
+	context.extend(config.context);
+
 	if !context.contains_key(&"name".to_string()) {
-		context.insert(
-			"name".to_string(),
-			env::current_dir()?
-				.file_name()
-				.ok_or_else(|| anyhow!("expected current directory to have a name"))?
-				.to_string_lossy()
-				.to_string(),
-		);
+		if let Some(dir) = env::current_dir()
+			.ok()
+			.and_then(|dir| dir.file_name().map(|name| name.to_os_string()))
+		{
+			context.insert("name".to_string(), dir.to_string_lossy().to_string());
+		} else {
+			eprintln!(
+				"{} {}",
+				"warning:".yellow(),
+				"name is unset, but is used by many templates"
+			);
+		}
 	};
 
 	if !context.contains_key(&"git.config.user.name".to_string()) {
-		let output = Command::new("git")
-			.args(["config", "user.name"])
-			.output()
-			.unwrap();
+		let output = Command::new("git").args(["config", "user.name"]).output();
 
-		if output.status.success() {
-			// Ouch. Two allocations in one line.
-			let stdout = String::from_utf8_lossy(&*output.stdout).trim().to_string();
-			context.insert("git.config.user.name".to_string(), stdout);
+		if let Ok(output) = output {
+			if output.status.success() {
+				// Ouch. Two allocations in one line.
+				let stdout = String::from_utf8_lossy(&*output.stdout).trim().to_string();
+				context.insert("git.config.user.name".to_string(), stdout);
+			}
+		} else {
+			eprintln!(
+				"{} {}",
+				"warning:".yellow(),
+				"git.config.user.name is unset, but is used by many templates"
+			);
 		}
 	};
 
 	if !context.contains_key(&"git.config.user.email".to_string()) {
-		let output = Command::new("git")
-			.args(["config", "user.email"])
-			.output()
-			.unwrap();
+		let output = Command::new("git").args(["config", "user.email"]).output();
 
-		if output.status.success() {
-			// Ouch. Two allocations in one line.
-			let stdout = String::from_utf8_lossy(&*output.stdout).trim().to_string();
-			context.insert("git.config.user.email".to_string(), stdout);
+		if let Ok(output) = output {
+			if output.status.success() {
+				// Ouch. Two allocations in one line.
+				let stdout = String::from_utf8_lossy(&*output.stdout).trim().to_string();
+				context.insert("git.config.user.email".to_string(), stdout);
+			}
+		} else {
+			eprintln!(
+				"{} {}",
+				"warning:".yellow(),
+				"git.config.user.email is unset, but is used by many templates"
+			);
 		}
 	};
 
@@ -115,6 +133,15 @@ async fn main() -> anyhow::Result<()> {
 		context.insert(
 			"date.year".to_string(),
 			chrono::Local::now().year().to_string(),
+		);
+	}
+
+	if context.contains_key(&"github.username".to_string())
+		&& !context.contains_key(&"github.owner".to_string())
+	{
+		context.insert(
+			"github.owner".to_string(),
+			context["github.username"].to_string(),
 		);
 	}
 
