@@ -72,8 +72,11 @@ where
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-	let Options { files, mut context } =
-		Options::try_from(&*env::args().skip(1).collect::<Vec<_>>())?;
+	let Options {
+		files,
+		mut context,
+		aliases,
+	} = Options::try_from(&*env::args().skip(1).collect::<Vec<_>>())?;
 
 	let config = Config::load()?;
 	context.extend(config.context);
@@ -90,42 +93,72 @@ async fn main() -> anyhow::Result<()> {
 				"warning:".yellow(),
 				"name is unset, but is used by many templates"
 			);
+			eprintln!(
+				"{} {}\n    {}",
+				"fix:".green(),
+				"try running:",
+				"okie [files...] -define \"name=my_project\""
+			);
 		}
 	};
 
-	if !context.contains_key(&"git.config.user.name".to_string()) {
+	if !context.contains_key(&"author.name".to_string()) {
 		let output = Command::new("git").args(["config", "user.name"]).output();
 
+		let log_failure = || {
+			eprintln!(
+				"{} {}",
+				"warning:".yellow(),
+				"could not determine author.name from your ~/.gitconfig, and is currently unset, but is used by many templates"
+			);
+			eprintln!(
+				"{} {}\n    {}",
+				"fix:".green(),
+				"try running:",
+				"okie -set \"author.name=James Baxter\""
+			);
+		};
+
 		if let Ok(output) = output {
 			if output.status.success() {
 				// Ouch. Two allocations in one line.
 				let stdout = String::from_utf8_lossy(&*output.stdout).trim().to_string();
-				context.insert("git.config.user.name".to_string(), stdout);
+				context.insert("author.name".to_string(), stdout);
+			} else {
+				log_failure();
 			}
 		} else {
-			eprintln!(
-				"{} {}",
-				"warning:".yellow(),
-				"git.config.user.name is unset, but is used by many templates"
-			);
+			log_failure();
 		}
 	};
 
-	if !context.contains_key(&"git.config.user.email".to_string()) {
+	if !context.contains_key(&"author.email".to_string()) {
 		let output = Command::new("git").args(["config", "user.email"]).output();
+
+		let log_failure = || {
+			eprintln!(
+				"{} {}",
+				"warning:".yellow(),
+				"could not determine author.email from your ~/.gitconfig, and is currently unset, but is used by many templates"
+			);
+			eprintln!(
+				"{} {}\n    {}",
+				"fix:".green(),
+				"try running:",
+				"okie -set \"author.email=jamesbaxter@hey.com\""
+			);
+		};
 
 		if let Ok(output) = output {
 			if output.status.success() {
 				// Ouch. Two allocations in one line.
 				let stdout = String::from_utf8_lossy(&*output.stdout).trim().to_string();
-				context.insert("git.config.user.email".to_string(), stdout);
+				context.insert("author.email".to_string(), stdout);
+			} else {
+				log_failure();
 			}
 		} else {
-			eprintln!(
-				"{} {}",
-				"warning:".yellow(),
-				"git.config.user.email is unset, but is used by many templates"
-			);
+			log_failure();
 		}
 	};
 
@@ -142,6 +175,63 @@ async fn main() -> anyhow::Result<()> {
 		context.insert(
 			"github.owner".to_string(),
 			context["github.username"].to_string(),
+		);
+	}
+
+	for (alias, canonical_name) in aliases {
+		if context.contains_key(&canonical_name) {
+			if !context.contains_key(&alias) {
+				context.insert(
+					"github.owner".to_string(),
+					context["github.username"].to_string(),
+				);
+			} else {
+				eprintln!(
+					"{0} {1} was aliased to {2}, but {1} is already set",
+					"warning:".yellow(),
+					alias,
+					canonical_name,
+				);
+			}
+		} else {
+			eprintln!(
+				"{0} {1} was aliased to {2}, but {2} is not set",
+				"warning:".yellow(),
+				alias,
+				canonical_name,
+			);
+		}
+	}
+
+	if context.contains_key(&"author.name".to_string())
+		&& !context.contains_key(&"licence.owner".to_string())
+		&& !context.contains_key(&"license.owner".to_string())
+	{
+		context.insert(
+			"licence.owner".to_string(),
+			context["author.name"].to_string(),
+		);
+		context.insert(
+			"license.owner".to_string(),
+			context["author.name"].to_string(),
+		);
+	}
+
+	if context.contains_key(&"license.owner".to_string())
+		&& !context.contains_key(&"licence.owner".to_string())
+	{
+		context.insert(
+			"licence.owner".to_string(),
+			context["license.owner"].to_string(),
+		);
+	}
+
+	if context.contains_key(&"licence.owner".to_string())
+		&& !context.contains_key(&"license.owner".to_string())
+	{
+		context.insert(
+			"license.owner".to_string(),
+			context["licence.owner"].to_string(),
 		);
 	}
 

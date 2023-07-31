@@ -1,7 +1,7 @@
 {
 	"name": "{{ name }}",
 	"version": "0.0.0",
-	"author": "{{ git.config.user.name }} <{{ git.config.user.email }}>",
+	"author": "{{ author.name }} <{{ author.email }}>",
 	"description": "",
 	"keywords": [],
 	"license": "MIT",

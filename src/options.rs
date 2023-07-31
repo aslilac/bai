@@ -16,6 +16,7 @@ static VARIABLE_NAME: Lazy<Regex> = Lazy::new(|| Regex::new(&format!("^{}$", *ID
 pub struct Options {
 	pub files: BTreeSet<String>,
 	pub context: HashMap<String, String>,
+	pub aliases: Vec<(String, String)>,
 }
 
 impl<S, const N: usize> TryFrom<&[S; N]> for Options
@@ -86,6 +87,7 @@ where
 		let mut args = args.into_iter();
 		let mut files = Vec::new();
 		let mut context = HashMap::new();
+		let mut aliases = vec![];
 
 		while let Some(arg) = args.next() {
 			let arg = arg.as_ref();
@@ -106,6 +108,26 @@ where
 						.find_at(key, 0)
 						.ok_or_else(|| anyhow!("key \"{}\" is invalid", key))?;
 					context.insert(key.to_string(), value.to_string());
+				}
+				"-use" | "--use" | "-alias" | "--alias" | "-A" => {
+					let alias = args
+						.next()
+						.ok_or_else(|| anyhow!("expected an alias after {}", arg))?
+						.as_ref();
+
+					let (alias, canonical_name) = alias.split_once('=').ok_or_else(|| {
+						anyhow!(
+							"invalid alias \"{}\", must contain a \"=\" to separate the alias and canonical name",
+							alias
+						)
+					})?;
+					VARIABLE_NAME
+						.find_at(alias, 0)
+						.ok_or_else(|| anyhow!("alias \"{}\" is invalid", alias))?;
+					VARIABLE_NAME
+						.find_at(canonical_name, 0)
+						.ok_or_else(|| anyhow!("canonical name \"{}\" is invalid", canonical_name))?;
+					aliases.push((alias.to_string(), canonical_name.to_string()));
 				}
 				_ => {
 					if (arg.len() >= 2 && arg.starts_with('-')) || arg.len() >= 3 && arg.starts_with("--") {
@@ -138,7 +160,11 @@ where
 			.flatten()
 			.collect();
 
-		Ok(Options { files, context })
+		Ok(Options {
+			files,
+			context,
+			aliases,
+		})
 	}
 }
 
