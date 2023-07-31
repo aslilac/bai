@@ -181,10 +181,7 @@ async fn main() -> anyhow::Result<()> {
 	for (alias, canonical_name) in aliases {
 		if context.contains_key(&canonical_name) {
 			if !context.contains_key(&alias) {
-				context.insert(
-					"github.owner".to_string(),
-					context["github.username"].to_string(),
-				);
+				context.insert(alias, context[&canonical_name].clone());
 			} else {
 				eprintln!(
 					"{0} {1} was aliased to {2}, but {1} is already set",
