@@ -8,6 +8,7 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'stati
 			"CODE_OF_CONDUCT.md",
 			"LICENSE",
 			"gleam.toml",
+			"README.md",
 			"src/$$name$$.gleam",
 		]),
 		"/go" => Ok(&[
@@ -17,6 +18,7 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'stati
 			"LICENSE",
 			"go.mod",
 			"main.go",
+			"README.md",
 			"staticcheck.conf",
 		]),
 		"/rs" | "/rust" => Ok(&[
@@ -27,6 +29,7 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'stati
 			"Cargo.toml",
 			"CODE_OF_CONDUCT.md",
 			"LICENSE",
+			"README.md",
 			"rust-toolchain.toml",
 			"src/main.rs",
 			"tests/main.rs",
@@ -42,6 +45,7 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'stati
 			"LICENSE",
 			"jest.config.js",
 			"package.json",
+			"README.md",
 			"tsconfig.build.json",
 			"tsconfig.json",
 		]),
