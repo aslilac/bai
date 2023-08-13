@@ -10,6 +10,15 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'stati
 			"gleam.toml",
 			"src/$$name$$.gleam",
 		]),
+		"/go" => Ok(&[
+			".github/workflows/main.yml@go",
+			".gitignore",
+			"CODE_OF_CONDUCT.md",
+			"LICENSE",
+			"go.mod",
+			"main.go",
+			"staticcheck.conf",
+		]),
 		"/rs" | "/rust" => Ok(&[
 			".cargo/config.toml",
 			".github/workflows/main.yml@rust",
@@ -23,7 +32,7 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'stati
 			"tests/main.rs",
 			"tests/setup.rs",
 		]),
-		"/ts" => Ok(&[
+		"/ts" | "/typescript" => Ok(&[
 			".github/workflows/main.yml",
 			".eslintrc.json",
 			".gitignore",

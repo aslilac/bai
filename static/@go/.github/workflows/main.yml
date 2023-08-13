@@ -1,0 +1,34 @@
+name: main
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["**"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v3
+        name: Prepare
+        with:
+          go-version: ^1.21
+
+      - run: |
+          go fmt ./...
+          git diff --exit-code
+        name: Check
+
+      - run: go vet -structtag=false ./...
+        name: Check
+
+      - run: go test
+        name: Test
