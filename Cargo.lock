@@ -69,6 +69,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "bai"
+version = "0.4.0"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "colored",
+ "etcetera",
+ "once_cell",
+ "regex",
+ "reqwest",
+ "serde",
+ "tokio",
+ "toml",
+ "toml_edit",
+]
+
+[[package]]
 name = "base64"
 version = "0.21.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -582,23 +599,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8bda667d9f2b5051b8833f59f3bf748b28ef54f850f4fcb389a252aa383866d1"
 dependencies = [
  "memchr",
-]
-
-[[package]]
-name = "okie"
-version = "0.4.0"
-dependencies = [
- "anyhow",
- "chrono",
- "colored",
- "etcetera",
- "once_cell",
- "regex",
- "reqwest",
- "serde",
- "tokio",
- "toml",
- "toml_edit",
 ]
 
 [[package]]

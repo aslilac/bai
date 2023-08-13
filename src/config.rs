@@ -19,7 +19,7 @@ impl Config {
 		Ok(
 			etcetera::choose_base_strategy()?
 				.config_dir()
-				.join("okie.toml"),
+				.join("bai.toml"),
 		)
 	}
 

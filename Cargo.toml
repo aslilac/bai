@@ -1,13 +1,13 @@
 [package]
-name = "okie"
+name = "bai"
 version = "0.4.0"
 authors = ["McKayla Washburn <mckayla@hey.com>"]
-description = "Create common files from a collection of templates"
+description = "Create common files from a large collection of templates"
 keywords = []
 license = "MIT"
-homepage = "https://github.com/aslilac/okie"
-repository = "https://github.com/aslilac/okie"
-documentation = "https://docs.rs/okie"
+homepage = "https://github.com/aslilac/bai"
+repository = "https://github.com/aslilac/bai"
+documentation = "https://docs.rs/bai"
 edition = "2021"
 
 [dependencies]

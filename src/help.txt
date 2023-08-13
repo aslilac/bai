@@ -1,16 +1,16 @@
-usage: okie [options] [/group...] [file...]
-       okie /gleam    create files for a Gleam project
-       okie /rust     create files for a Rust project
-       okie /ts       create files for a TypeScript project
+usage: bai [options] [/group...] [file...]
+       bai /gleam    create files for a Gleam project
+       bai /rust     create files for a Rust project
+       bai /ts       create files for a TypeScript project
 
   -h, --help          show this help message
   -v, --version       show version information
 
-      --get-config-path              prints the location of okie.toml to stdout
+      --get-config-path              prints the location of bai.toml to stdout
       --set    <key>=<value> [...]   set variables persistently for use in templates
   -d, --define <key>=<value>         define a variable for use in templates
 
 more examples:
-       okie -get-config-path
-       okie -set github.username=aslilac
-       okie LICENSE -define date.year=2024
+       bai -get-config-path
+       bai -set github.username=aslilac
+       bai LICENSE -define date.year=2024

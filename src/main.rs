@@ -18,7 +18,7 @@ use config::Config;
 use options::Options;
 
 static BASE: Lazy<reqwest::Url> = Lazy::new(|| {
-	reqwest::Url::parse("https://raw.githubusercontent.com/aslilac/okie/main/static/")
+	reqwest::Url::parse("https://raw.githubusercontent.com/aslilac/bai/main/static/")
 		.expect("invalid base URL")
 });
 
@@ -97,7 +97,7 @@ async fn main() -> anyhow::Result<()> {
 				"{} {}\n    {}",
 				"fix:".green(),
 				"try running:",
-				"okie [files...] -define \"name=my_project\""
+				"bai [files...] -define \"name=my_project\""
 			);
 		}
 	};
@@ -115,7 +115,7 @@ async fn main() -> anyhow::Result<()> {
 				"{} {}\n    {}",
 				"fix:".green(),
 				"try running:",
-				"okie -set \"author.name=James Baxter\""
+				"bai -set \"author.name=James Baxter\""
 			);
 		};
 
@@ -145,7 +145,7 @@ async fn main() -> anyhow::Result<()> {
 				"{} {}\n    {}",
 				"fix:".green(),
 				"try running:",
-				"okie -set \"author.email=jamesbaxter@hey.com\""
+				"bai -set \"author.email=jamesbaxter@hey.com\""
 			);
 		};
 
