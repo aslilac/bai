@@ -5,9 +5,39 @@ on:
     tags: ["v*.*.*"]
 
 jobs:
-  publish:
-    name: crates.io
+  check:
     runs-on: ubuntu-latest
+    name: Check
+
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout
+
+      - run: |
+          version="v$(cat Cargo.toml | grep -m 1 "version" | sed -r "s/version *= *\"([[:digit:].]+)\"/\1/")"
+          if [ "$version" != "${{ github.ref_name }}" ]; then
+            echo "tag ${{ github.ref_name }} does not match version $version in Cargo.toml"
+            exit 1
+          fi
+        name: Version
+
+      - uses: actions/cache@v3
+        name: Cache
+        with:
+          path: |
+            ~/.cargo/
+            ./build/
+          key: publish-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: publish-cargo-
+
+      - run: cargo test
+        name: Test
+
+  publish:
+    runs-on: ubuntu-latest
+    name: crates.io
+    needs:
+      - check
 
     steps:
       - uses: actions/checkout@v3
@@ -22,9 +52,6 @@ jobs:
           key: publish-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: publish-cargo-
 
-      - run: cargo test
-        name: Test
-
       - run: cargo publish
         name: Publish
         env:
@@ -38,7 +65,7 @@ jobs:
           # TODO: Figure out how to "setup pkg-config for cross-compilation"
           # - os: ubuntu-latest
           #   target: aarch64-unknown-linux-gnu
-          #   executable: {{name}}
+          #   executable: {{ name }}
 
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
@@ -60,9 +87,10 @@ jobs:
             target: x86_64-apple-darwin
             executable: {{ name }}
 
-    name: ${{ matrix.release.target }}
     runs-on: ${{ matrix.release.os }}
-    needs: publish
+    name: ${{ matrix.release.target }}
+    needs:
+      - check
 
     steps:
       - uses: actions/checkout@v3
@@ -77,10 +105,7 @@ jobs:
           key: release-${{ matrix.release.target }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: release-${{ matrix.release.target }}-cargo-
 
-      - run: |
-          rustup toolchain add nightly
-          rustup default nightly
-          rustup target add ${{ matrix.release.target }}
+      - run: rustup target add ${{ matrix.release.target }}
         name: Prepare — ${{ matrix.release.target }}
 
       - run: cargo build --target ${{ matrix.release.target }} --release
