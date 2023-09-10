@@ -10,6 +10,8 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'stati
 			"gleam.toml",
 			"README.md",
 			"src/$$name$$.gleam",
+			"test/$$name$$_test.gleam",
+			"test/$$name$$/example_test.gleam",
 		]),
 		"/go" => Ok(&[
 			".github/workflows/main.yml@go",
