@@ -1,0 +1,42 @@
+name: release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: "26.0"
+          gleam-version: "0.30"
+
+      - uses: aslilac/setup@v1
+        with:
+          archives: |
+            https://mckayla.cloud/tomlq-linux-x64.tar.gz
+
+      - run: |
+          if [ "v$(tomlq version -f gleam.toml)" == "${{ github.ref_name }}" ]; then
+            exit 0
+          fi
+
+          echo "tag does not match version in gleam.toml, refusing to publish"
+          exit 1
+
+      - run: gleam test
+        name: Test
+
+      - run: gleam publish -y
+        name: Publish
+        env:
+          HEXPM_USER: ${{ secrets.HEX_USERNAME }}
+          HEXPM_PASS: ${{ secrets.HEX_PASSWORD }}
+
+      - uses: softprops/action-gh-release@v1
+        name: Release

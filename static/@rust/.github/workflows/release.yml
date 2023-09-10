@@ -2,7 +2,7 @@ name: release
 
 on:
   push:
-    tags: ["v*"]
+    tags: ["v*.*.*"]
 
 jobs:
   publish:
@@ -14,7 +14,7 @@ jobs:
         name: Checkout
 
       - uses: actions/cache@v3
-        name: Configure cache
+        name: Cache
         with:
           path: |
             ~/.cargo/
@@ -42,23 +42,23 @@ jobs:
 
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            executable: {{name}}
+            executable: {{ name }}
 
           - os: windows-latest
             target: aarch64-pc-windows-msvc
-            executable: {{name}}.exe
+            executable: {{ name }}.exe
 
           - os: windows-latest
             target: x86_64-pc-windows-msvc
-            executable: {{name}}.exe
+            executable: {{ name }}.exe
 
           - os: macos-latest
             target: aarch64-apple-darwin
-            executable: {{name}}
+            executable: {{ name }}
 
           - os: macos-latest
             target: x86_64-apple-darwin
-            executable: {{name}}
+            executable: {{ name }}
 
     name: ${{ matrix.release.target }}
     runs-on: ${{ matrix.release.os }}
@@ -69,7 +69,7 @@ jobs:
         name: Checkout
 
       - uses: actions/cache@v3
-        name: Configure cache
+        name: Cache
         with:
           path: |
             ~/.cargo/
@@ -86,26 +86,31 @@ jobs:
       - run: cargo build --target ${{ matrix.release.target }} --release
         name: Build — ${{ matrix.release.target }}
 
-      - run: tar -a -cf {{name}}-${{ github.ref_name }}-${{ matrix.release.target }}.tar.gz ${{ matrix.release.executable }}
+      # Create .tar.gz files for Linux and macOS
+      - run: tar -a -cf {{ name }}-${{ github.ref_name }}-${{ matrix.release.target }}.tar.gz ${{ matrix.release.executable }}
         name: Package (tar) — ${{ matrix.release.target }}
         working-directory: ./build/${{ matrix.release.target }}/release/
+        if: ${{ !startsWith(matrix.release.os, 'windows') }}
 
-      - run: zip -r {{name}}-${{ github.ref_name }}-${{ matrix.release.target }}.zip ${{ matrix.release.executable }}
+      # Create .zip files for Linux and macOS
+      - run: zip -r {{ name }}-${{ github.ref_name }}-${{ matrix.release.target }}.zip ${{ matrix.release.executable }}
         name: Package (zip) — ${{ matrix.release.target }}
         working-directory: ./build/${{ matrix.release.target }}/release/
         if: ${{ !startsWith(matrix.release.os, 'windows') }}
 
-      - run: Compress-Archive ${{ matrix.release.executable }} -DestinationPath {{name}}-${{ github.ref_name }}-${{ matrix.release.target }}.zip
+      # Create .zip files for Windows
+      - run: Compress-Archive ${{ matrix.release.executable }} -DestinationPath {{ name }}-${{ github.ref_name }}-${{ matrix.release.target }}.zip
         name: Package (zip) — ${{ matrix.release.target }}
         working-directory: ./build/${{ matrix.release.target }}/release/
         if: ${{ startsWith(matrix.release.os, 'windows') }}
 
+      # Upload archives to a Github release for this version
       - uses: softprops/action-gh-release@v1
         name: Publish
         with:
-          files: ./build/${{ matrix.release.target }}/release/{{name}}-${{ github.ref_name }}-${{ matrix.release.target }}.*
+          files: ./build/${{ matrix.release.target }}/release/{{ name }}-${{ github.ref_name }}-${{ matrix.release.target }}.*
 
       # We don't want the archives to be stored in the cache of the build directory
-      - run: rm {{name}}-${{ github.ref_name }}-${{ matrix.release.target }}.*
+      - run: rm {{ name }}-${{ github.ref_name }}-${{ matrix.release.target }}.*
         name: Cleanup
         working-directory: ./build/${{ matrix.release.target }}/release/
