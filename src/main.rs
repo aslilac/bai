@@ -33,7 +33,7 @@ type Context = HashMap<String, String>;
 fn parse_file_name(file: &str) -> anyhow::Result<(&str, reqwest::Url)> {
 	let (file_path, tag) = file
 		.rsplit_once("@")
-		.map(|(file_path, tag)| (file_path, Some(tag)))
+		.map(|(file_path, tag)| (file_path, Some(tag.to_ascii_lowercase())))
 		.unwrap_or((&file, None));
 
 	let mut base = BASE.clone();
@@ -109,13 +109,19 @@ async fn main() -> anyhow::Result<()> {
 			eprintln!(
 				"{} {}",
 				"warning:".yellow(),
-				"could not determine author.name from your ~/.gitconfig, and is currently unset, but is used by many templates"
+				"author.name is unset, but is used by many templates"
 			);
 			eprintln!(
 				"{} {}\n    {}",
 				"fix:".green(),
-				"try running:",
+				"author.name can be set by running",
 				"bai -set \"author.name=James Baxter\""
+			);
+			eprintln!(
+				"{} {}\n    {}",
+				"fix:".green(),
+				"author.name can also be inferred from git",
+				"git config --global user.name \"James Baxter\""
 			);
 		};
 
@@ -139,13 +145,19 @@ async fn main() -> anyhow::Result<()> {
 			eprintln!(
 				"{} {}",
 				"warning:".yellow(),
-				"could not determine author.email from your ~/.gitconfig, and is currently unset, but is used by many templates"
+				"author.email is currently unset, but is used by many templates"
 			);
 			eprintln!(
 				"{} {}\n    {}",
 				"fix:".green(),
-				"try running:",
+				"author.email can be set by running",
 				"bai -set \"author.email=jamesbaxter@hey.com\""
+			);
+			eprintln!(
+				"{} {}\n    {}",
+				"fix:".green(),
+				"author.email can also be inferred from git",
+				"git config --global user.email \"James Baxter\""
 			);
 		};
 
