@@ -1,0 +1,79 @@
+name: main
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["**"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout
+
+      - uses: actions/setup-node@v3
+        name: Prepare
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - uses: actions/cache@v3
+        name: Cache
+        with:
+          path: |
+            ~/.npm/
+          key: build-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: build-npm-
+
+      - run: |
+          npm install
+          git diff --exit-code
+        name: Install
+
+      - run: npm run test
+        name: Test
+
+      - uses: codecov/codecov-action@v3
+        name: Coverage
+
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout
+
+      - uses: actions/setup-node@v3
+        name: Prepare
+        with:
+          node-version: 20.x
+
+      - uses: actions/cache@v3
+        name: Cache
+        with:
+          path: |
+            ~/.npm/
+          key: build-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: build-npm-
+
+      - run: |
+          npm install
+          git diff --exit-code
+        name: Install
+
+      - run: npx -- prettier --check .
+        name: Format
+
+      - run: npm run lint
+        name: Lint

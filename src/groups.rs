@@ -38,7 +38,7 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'stati
 			"tests/setup.rs",
 		]),
 		"/ts" | "/typescript" => Ok(&[
-			".github/workflows/main.yml",
+			".github/workflows/main.yml@node",
 			".eslintrc.json",
 			".gitignore",
 			".prettierignore",
@@ -51,6 +51,6 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'stati
 			"tsconfig.build.json",
 			"tsconfig.json",
 		]),
-		group => Err(anyhow!("unrecognized group: {}", group)),
+		any_other_group => Err(anyhow!("unrecognized group: {}", any_other_group)),
 	}
 }

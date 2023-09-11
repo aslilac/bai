@@ -14,42 +14,31 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        rust-version: [stable, beta, nightly]
-      fail-fast: false
-
     steps:
       - uses: actions/checkout@v3
-
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ matrix.rust-version }}
-          default: true
+        name: Checkout
 
       - uses: actions/cache@v3
+        name: Cache
         with:
           path: |
             ~/.cargo/
             ./build/
-          key: test-cargo-${{matrix.rust-version}}-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: test-cargo-${{matrix.rust-version}}-
+          key: test-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: test-cargo-
 
       - run: cargo test
+        name: Test
 
-  lint:
+  check:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
-
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          components: clippy, rustfmt
-          default: true
+        name: Checkout
 
       - uses: actions/cache@v3
+        name: Cache
         with:
           path: |
             ~/.cargo/
@@ -58,5 +47,7 @@ jobs:
           restore-keys: lint-cargo-
 
       - run: cargo fmt -- --check
+        name: Format
 
       - run: cargo clippy
+        name: Lint
