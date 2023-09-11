@@ -11,8 +11,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        name: Checkout
 
       - uses: erlef/setup-beam@v1
+        name: Prepare
         with:
           otp-version: "26.0"
           gleam-version: "0.30"
