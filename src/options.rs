@@ -66,11 +66,14 @@ where
 		}
 
 		if matches!(args[0].as_ref(), "-set" | "--set") {
-			let definitions = args.into_iter().skip(1)
-			.filter_map(|definition| {
+			let definitions = args.into_iter().skip(1).filter_map(|definition| {
 				let definition = definition.as_ref();
 				let Some((key, value)) = definition.split_once('=') else {
-					eprintln!("{} invalid definition \"{}\", must contain a \"=\" to separate the name and value", "warning:".yellow(), definition);
+					eprintln!(
+						"{} invalid definition \"{}\", must contain a \"=\" to separate the name and value",
+						"warning:".yellow(),
+						definition
+					);
 					return None;
 				};
 				let Some(_) = VARIABLE_NAME.find_at(key, 0) else {
