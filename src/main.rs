@@ -54,17 +54,17 @@ where
 	// Fetch file
 	let file_content = reqwest::get(url).await?.error_for_status()?.text().await?;
 
-	// Create parent directories as necessary
-	if let Some(parent) = Path::new(&file).parent() {
-		if !parent.exists() {
-			fs::create_dir_all(parent)?;
-		}
-	}
-
 	let each = |captures: &regex::Captures| ctx.get(&captures[1]);
 	// Fill in template variables
 	let file_content = regext::for_each(&TEMPLATE_VARIABLE, file_content, each);
 	let file_path = regext::for_each(&PATH_TEMPLATE_VARIABLE, file_path.to_string(), each);
+
+	// Create parent directories as necessary
+	if let Some(parent) = Path::new(&file_path).parent() {
+		if !parent.exists() {
+			fs::create_dir_all(parent)?;
+		}
+	}
 	fs::write(file_path, file_content)?;
 
 	Ok(())
