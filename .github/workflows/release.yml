@@ -10,7 +10,7 @@ jobs:
     name: Check
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: Checkout
 
       - run: |
@@ -21,7 +21,7 @@ jobs:
           fi
         name: Version
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         name: Cache
         with:
           path: |
@@ -40,10 +40,10 @@ jobs:
       - check
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: Checkout
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         name: Cache
         with:
           path: |
@@ -93,10 +93,10 @@ jobs:
       - check
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: Checkout
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         name: Cache
         with:
           path: |

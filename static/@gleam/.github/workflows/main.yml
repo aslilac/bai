@@ -15,14 +15,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: Checkout
 
       - uses: erlef/setup-beam@v1
         name: Prepare
         with:
-          otp-version: "26.0"
-          gleam-version: "0.30"
+          otp-version: "26.2"
+          gleam-version: "1.1"
 
       - run: gleam format --check
         name: Format

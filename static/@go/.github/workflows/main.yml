@@ -15,19 +15,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - uses: actions/setup-go@v3
         name: Prepare
         with:
-          go-version: ^1.21
+          go-version: ^1.22
 
       - run: |
           go fmt ./...
           git diff --exit-code
         name: Check
 
-      - run: go vet -structtag=false ./...
+      - run: go vet ./...
         name: Check
 
       - run: go test

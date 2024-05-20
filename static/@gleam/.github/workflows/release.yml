@@ -10,14 +10,14 @@ jobs:
     name: hex.pm
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         name: Checkout
 
       - uses: erlef/setup-beam@v1
         name: Prepare
         with:
-          otp-version: "26.0"
-          gleam-version: "0.30"
+          otp-version: "26.2"
+          gleam-version: "1.1"
 
       - run: |
           version="v$(cat gleam.toml | grep -m 1 "version" | sed -r "s/version *= *\"([[:digit:].]+)\"/\1/")"

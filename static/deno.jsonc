@@ -4,6 +4,6 @@
 		"useTabs": true
 	},
 	"imports": {
-		"std/": "https://deno.land/std@0.198.0/"
+		"std/": "https://deno.land/std@0.200.0/"
 	}
 }

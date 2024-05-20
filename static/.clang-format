@@ -1,6 +1,7 @@
 ---
 BasedOnStyle: LLVM
 AlignAfterOpenBracket: AlwaysBreak
+AlignOperands: DontAlign
 AllowAllArgumentsOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortFunctionsOnASingleLine: Empty
@@ -9,7 +10,7 @@ AlwaysBreakTemplateDeclarations: Yes
 BinPackArguments: false
 BinPackParameters: false
 BreakBeforeBraces: Attach
-ColumnLimit: 90
+ColumnLimit: 100
 ContinuationIndentWidth: 2
 DerivePointerAlignment: false
 IndentWidth: 2
@@ -21,10 +22,11 @@ MacroBlockBegin: ""
 MacroBlockEnd: ""
 MaxEmptyLinesToKeep: 1
 ObjCBinPackProtocolList: Auto
-ObjCBlockIndentWidth: 2
+ObjCBlockIndentWidth: 4
 PointerAlignment: Left
 # ReferenceAlignment: Pointer
-# SortIncludes: CaseInsensitive
+ReflowComments: false
+SortIncludes: Never # Ideally I just want `<...>` before `"..."`
 SpaceAfterCStyleCast: true
 Standard: Latest
 TabWidth: 2
