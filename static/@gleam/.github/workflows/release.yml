@@ -16,8 +16,8 @@ jobs:
       - uses: erlef/setup-beam@v1
         name: Prepare
         with:
-          otp-version: "26.2"
-          gleam-version: "1.1"
+          otp-version: "27.1"
+          gleam-version: "1.5"
 
       - run: |
           version="v$(cat gleam.toml | grep -m 1 "version" | sed -r "s/version *= *\"([[:digit:].]+)\"/\1/")"

@@ -23,19 +23,16 @@
 	],
 	"dependencies": {},
 	"devDependencies": {
-		"@mckayla/tsconfig": "^1.0.5",
-		"@types/jest": "^29.5.0",
-		"prettier": "~3.2.5",
-		"jest": "^29.6.0",
-		"ts-jest": "^29.1.0",
-		"typescript": "~5.4.5"
+		"prettier": "~3.3.3",
+		"typescript": "~5.6.2",
+		"vitest": "^2.1.1"
 	},
 	"scripts": {
 		"build": "tsc -p tsconfig.build.json",
 		"dev": "tsc -p tsconfig.build.json -w",
 		"fmt": "prettier --write .",
 		"prepack": "$npm_execpath run build -s",
-		"test": "jest",
+		"test": "vitest run",
 		"type-check": "tsc -p . --noEmit"
 	}
 }
