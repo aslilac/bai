@@ -1,6 +1,4 @@
 {
-	"extends": "@mckayla/tsconfig",
-	"include": ["./src/**/*"],
 	"compilerOptions": {
 		"allowArbitraryExtensions": true,
 		"baseUrl": ".",
@@ -34,5 +32,6 @@
 		"useDefineForClassFields": true,
 		"useUnknownInCatchVariables": true,
 		"verbatimModuleSyntax": true,
-	}
+	},
+	"include": ["./src/**/*"]
 }
