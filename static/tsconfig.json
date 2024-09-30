@@ -22,7 +22,7 @@
 		"noUncheckedIndexedAccess": false,
 		"noUnusedLocals": false,
 		"noUnusedParameters": false,
-		"outDir": "./build/",
+		"outDir": "build/",
 		"preserveWatchOutput": true,
 		"resolveJsonModule": true,
 		"sourceMap": true,
