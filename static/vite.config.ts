@@ -1,7 +1,6 @@
-import type { UserConfig } from "vite";
-
 export default {
+	root: "src/",
 	build: {
-		outDir: "./build/",
+		outDir: "../build/",
 	}
-} satisfies UserConfig;
+} satisfies import("vite").UserConfig;

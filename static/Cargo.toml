@@ -10,4 +10,8 @@ repository = "https://github.com/{{ github.owner }}/{{ name }}"
 documentation = "https://docs.rs/{{ name }}"
 edition = "2021"
 
+[[bin]]
+name = "{{ name }}"
+path = "./main.rs"
+
 [dependencies]
