@@ -18,5 +18,4 @@ bai LICENSE-MIT # Just use a single template file. Note that this will get
 # the current directory, your Git configuration, and other such "system state".
 # Defaults try to be sensible, but all of these variables can also be set manually!
 bai Cargo.toml -define name="coolest_new_crate"
-
 ```
