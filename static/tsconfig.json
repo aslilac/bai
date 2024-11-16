@@ -1,13 +1,10 @@
 {
 	"compilerOptions": {
-		"allowArbitraryExtensions": true,
 		"baseUrl": ".",
 		"declaration": true,
-		"esModuleInterop": true,
 		"exactOptionalPropertyTypes": false,
 		"experimentalDecorators": true,
 		"forceConsistentCasingInFileNames": true,
-		"jsx": "preserve",
 		"incremental": true,
 		"isolatedModules": true,
 		"module": "node16",
@@ -24,7 +21,6 @@
 		"noUnusedParameters": false,
 		"outDir": "build/",
 		"preserveWatchOutput": true,
-		"resolveJsonModule": true,
 		"sourceMap": true,
 		"strict": true,
 		"target": "esnext",

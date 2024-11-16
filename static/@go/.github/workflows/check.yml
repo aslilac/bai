@@ -1,4 +1,4 @@
-name: main
+name: check
 
 on:
   push:
@@ -11,21 +11,24 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
-        name: Checkout
 
-      - uses: erlef/setup-beam@v1
+      - uses: actions/setup-go@v5
         name: Prepare
         with:
-          otp-version: "27.1"
-          gleam-version: "1.5"
+          go-version: ^1.22
 
-      - run: gleam format --check
-        name: Format
+      - run: |
+          go fmt ./...
+          git diff --exit-code
+        name: Check
 
-      - run: gleam test
+      - run: go vet ./...
+        name: Check
+
+      - run: go test
         name: Test

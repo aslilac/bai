@@ -5,15 +5,15 @@
 	"description": "",
 	"keywords": [],
 	"license": "MIT",
-	"homepage": "https://github.com/{{ github.owner }}/{{ name }}",
+	"homepage": "https://mckay.la/{{ name }}",
 	"repository": "https://github.com/{{ github.owner }}/{{ name }}",
 	"bugs": "https://github.com/{{ github.owner }}/{{ name }}/issues",
 	"type": "module",
 	"main": "./build/index.js",
 	"types": "./build/index.d.ts",
 	"exports": {
-		"import": {
-			"default": "./build/index.js",
+		".": {
+			"import": "./build/index.js",
 			"types": "./build/index.d.ts"
 		}
 	},
@@ -24,8 +24,8 @@
 	"dependencies": {},
 	"devDependencies": {
 		"prettier": "~3.3.3",
-		"typescript": "~5.6.2",
-		"vitest": "^2.1.1"
+		"typescript": "~5.6.3",
+		"vitest": "^2.1.5"
 	},
 	"scripts": {
 		"build": "tsc -p tsconfig.build.json",

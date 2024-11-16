@@ -3,7 +3,7 @@ use anyhow::anyhow;
 pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'static str]> {
 	match group.as_ref() {
 		"/gleam" => Ok(&[
-			".github/workflows/main.yml@gleam",
+			".github/workflows/check.yml@gleam",
 			".gitignore",
 			"CODE_OF_CONDUCT.md",
 			"LICENSE",
@@ -14,7 +14,7 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'stati
 			"test/$$name$$/example_test.gleam",
 		]),
 		"/go" => Ok(&[
-			".github/workflows/main.yml@go",
+			".github/workflows/check.yml@go",
 			".gitignore",
 			"CODE_OF_CONDUCT.md",
 			"LICENSE",
@@ -25,7 +25,7 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'stati
 		]),
 		"/rs" | "/rust" => Ok(&[
 			".cargo/config.toml",
-			".github/workflows/main.yml@rust",
+			".github/workflows/check.yml@rust",
 			".gitignore",
 			".rustfmt.toml",
 			"Cargo.toml",
@@ -33,12 +33,12 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'stati
 			"LICENSE",
 			"README.md",
 			"rust-toolchain.toml",
-			"src/main.rs",
+			"main.rs",
 			"tests/main.rs",
 			"tests/setup.rs",
 		]),
 		"/ts" | "/typescript" => Ok(&[
-			".github/workflows/main.yml@node",
+			".github/workflows/check.yml@node",
 			".gitignore",
 			".prettierignore",
 			".prettierrc.json",
@@ -51,15 +51,17 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<&'static [&'stati
 			"tsconfig.json",
 		]),
 		"/react" | "/tsx" => Ok(&[
-			".github/workflows/main.yml@node",
+			".github/workflows/check.yml@node",
 			".gitignore",
 			".prettierignore",
 			".prettierrc.json",
 			"CODE_OF_CONDUCT.md",
 			"LICENSE",
 			"package.json@react",
+			"postcss.config.js",
 			"README.md",
-			"src/$$name$$.tsx",
+			"src/index.tsx",
+			"tailwind.config.ts",
 			"tsconfig.json@react",
 		]),
 		any_other_group => Err(anyhow!("unrecognized group: {}", any_other_group)),

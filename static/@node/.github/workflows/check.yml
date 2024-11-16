@@ -1,0 +1,39 @@
+name: check
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["**"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ["20", "22"]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout
+
+      - uses: actions/setup-node@v4
+        name: Prepare
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+
+      - run: yarn
+
+      - run: yarn exec -- prettier --check .
+        if: ${{ matrix.node-version == '22' }}
+
+      - run: yarn test
+
+      - run: yarn build
