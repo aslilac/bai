@@ -34,6 +34,6 @@ jobs:
       - run: yarn exec -- prettier --check .
         if: ${{ matrix.node-version == '22' }}
 
-      - run: yarn test
+      - run: yarn type-check
 
-      - run: yarn build
+      - run: yarn test
