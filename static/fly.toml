@@ -1,0 +1,23 @@
+# https://fly.io/docs/reference/configuration/
+
+app = "{{ name }}"
+primary_region = "sea"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+[checks]
+  [checks.http]
+    type = "http"
+    interval = "1m0s"
+    timeout = "5s"
+    grace_period = "15s"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
