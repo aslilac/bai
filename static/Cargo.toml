@@ -8,10 +8,6 @@ license = "MIT"
 homepage = "https://mckay.la/{{ name }}"
 repository = "https://github.com/{{ github.owner }}/{{ name }}"
 documentation = "https://docs.rs/{{ name }}"
-edition = "2021"
-
-[[bin]]
-name = "{{ name }}"
-path = "./main.rs"
+edition = "2024"
 
 [dependencies]
