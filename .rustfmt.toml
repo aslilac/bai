@@ -1,4 +1,5 @@
-edition = "2021"
+edition = "2024"
 
 hard_tabs = true
+imports_granularity = "Item"
 tab_spaces = 2
