@@ -8,7 +8,7 @@ license = "MIT"
 homepage = "https://mckay.la/bai"
 repository = "https://github.com/aslilac/bai"
 documentation = "https://docs.rs/bai"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 anyhow = "1.0.72"
