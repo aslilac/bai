@@ -1,6 +1,5 @@
 {
 	"compilerOptions": {
-		"baseUrl": ".",
 		"declaration": true,
 		"exactOptionalPropertyTypes": false,
 		"experimentalDecorators": true,
@@ -17,7 +16,7 @@
 		"noImplicitThis": true,
 		"noPropertyAccessFromIndexSignature": true,
 		"noUncheckedIndexedAccess": false,
-		"noUnusedLocals": false,
+		"noUnusedLocals": true,
 		"noUnusedParameters": false,
 		"outDir": "build/",
 		"preserveWatchOutput": true,

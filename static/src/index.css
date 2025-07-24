@@ -1,1 +1,31 @@
 @import "tailwindcss";
+
+@font-face {
+	font-family: "Cascadia Code";
+	font-style: normal;
+	src: url("https://fonts.mckayla.cloud/CascadiaCode.woff2") format(woff2);
+}
+@font-face {
+	font-family: "Outfit";
+	font-style: normal;
+	src: url("https://fonts.mckayla.cloud/Outfit.woff2") format(woff2);
+}
+
+@theme {
+	--font-sans: Outfit, Avenir, Montserrat, ui-sans-serif, system-ui, sans-serif;
+	--font-monospace: "Cascadia Code", ui-monospace, "Source Code Pro", monospace;
+}
+
+@property --grid-auto-size {
+	syntax: "<length>";
+	inherits: true;
+	initial-value: 300px;
+}
+
+@utility grid-cols-auto {
+	grid-template-columns: repeat(auto-fill, minmax(var(--grid-auto-size), 1fr));
+}
+
+@utility grid-rows-auto {
+	grid-template-rows: repeat(auto-fill, minmax(var(--grid-auto-size), 1fr));
+}

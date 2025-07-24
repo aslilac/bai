@@ -1,7 +1,0 @@
-{
-	"extends": ".",
-	"compilerOptions": {
-		"noUnusedLocals": true
-	},
-	"exclude": ["./**/*.test.*"]
-}

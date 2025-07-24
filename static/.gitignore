@@ -3,6 +3,7 @@
 .idea/
 .nova/
 .vscode/
+.zed/
 build/
 coverage/
 dist/

@@ -3,6 +3,7 @@
 		"allowArbitraryExtensions": true,
 		"allowImportingTsExtensions": true,
 		"declaration": false,
+		"erasableSyntaxOnly": true,
 		"esModuleInterop": true,
 		"exactOptionalPropertyTypes": false,
 		"forceConsistentCasingInFileNames": true,
@@ -19,7 +20,7 @@
 		"noImplicitThis": true,
 		"noPropertyAccessFromIndexSignature": true,
 		"noUncheckedIndexedAccess": false,
-		"noUnusedLocals": false,
+		"noUnusedLocals": true,
 		"noUnusedParameters": false,
 		"preserveWatchOutput": true,
 		"sourceMap": true,
@@ -28,7 +29,10 @@
 		"types": ["react", "react-dom", "vite/client"],
 		"useDefineForClassFields": true,
 		"useUnknownInCatchVariables": true,
-		"verbatimModuleSyntax": true
+		"verbatimModuleSyntax": true,
+		"paths": {
+			"#/*": ["./src/*"],
+		},
 	},
 	"include": ["./src/**/*"]
 }
