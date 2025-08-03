@@ -112,8 +112,9 @@ fn new_rust_project() {
 		Command::new("cargo")
 			.arg("test")
 			.current_dir(PATH)
-			.status()
+			.output()
 			.unwrap()
+			.status
 			.success()
 	);
 }
