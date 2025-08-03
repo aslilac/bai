@@ -129,21 +129,16 @@ async fn main() -> anyhow::Result<()> {
 			context.insert("author.name".to_string(), stdout);
 		} else {
 			eprintln!(
-				"{} {}",
-				"warning:".yellow(),
-				"author.name is unset, but is used by many templates"
+				"{} author.name is unset, but is used by many templates",
+				"warning:".yellow()
 			);
 			eprintln!(
-				"{} {}\n    {}",
-				"fix:".green(),
-				"author.name can be set by running",
-				"bai -set \"author.name=James Baxter\""
+				"{} author.name can be set by running\n    bai -set \"author.name=James Baxter\"",
+				"fix:".green()
 			);
 			eprintln!(
-				"{} {}\n    {}",
-				"fix:".green(),
-				"author.name can also be inferred from git",
-				"git config --global user.name \"James Baxter\""
+				"{} author.name can also be inferred from git\n    git config --global user.name \"James Baxter\"",
+				"fix:".green()
 			);
 		}
 	};
@@ -159,21 +154,16 @@ async fn main() -> anyhow::Result<()> {
 			context.insert("author.email".to_string(), stdout);
 		} else {
 			eprintln!(
-				"{} {}",
-				"warning:".yellow(),
-				"author.email is unset, but is used by many templates"
+				"{} author.email is unset, but is used by many templates",
+				"warning:".yellow()
 			);
 			eprintln!(
-				"{} {}\n    {}",
-				"fix:".green(),
-				"author.email can be set by running",
-				"bai -set \"author.email=jamesbaxter@hey.com\""
+				"{} author.email can be set by running\n    bai -set \"author.email=jamesbaxter@hey.com\"",
+				"fix:".green()
 			);
 			eprintln!(
-				"{} {}\n    {}",
-				"fix:".green(),
-				"author.email can also be inferred from git",
-				"git config --global user.email \"jamesbaxter@hey.com\""
+				"{} author.email can also be inferred from git\n    git config --global user.email \"jamesbaxter@hey.com\"",
+				"fix:".green()
 			);
 		}
 	};
@@ -279,43 +269,43 @@ mod tests {
 	#[test]
 	fn parse_template_replacements() {
 		let file_content = "Hi, my name is {{ name }}!";
-		let captures = TEMPLATE_VARIABLE.captures(&file_content).unwrap();
+		let captures = TEMPLATE_VARIABLE.captures(file_content).unwrap();
 		assert_eq!(&captures[1], "name");
 		assert_eq!(captures.get(0).unwrap().range(), 15..25);
 
 		// No spaces is fine
 		let file_content = "Hi, my name is {{name}}!";
-		let captures = TEMPLATE_VARIABLE.captures(&file_content).unwrap();
+		let captures = TEMPLATE_VARIABLE.captures(file_content).unwrap();
 		assert_eq!(&captures[1], "name");
 		assert_eq!(captures.get(0).unwrap().range(), 15..23);
 
 		// Multiple spaces is fine
 		let file_content = "Hi, my name is {{  name  }}!";
-		let captures = TEMPLATE_VARIABLE.captures(&file_content).unwrap();
+		let captures = TEMPLATE_VARIABLE.captures(file_content).unwrap();
 		assert_eq!(&captures[1], "name");
 		assert_eq!(captures.get(0).unwrap().range(), 15..27);
 
 		// `.` and `:` are fine
 		let file_content = "Hi, my name is {{ github.username }}!";
-		let captures = TEMPLATE_VARIABLE.captures(&file_content).unwrap();
+		let captures = TEMPLATE_VARIABLE.captures(file_content).unwrap();
 		assert_eq!(&captures[1], "github.username");
 		assert_eq!(captures.get(0).unwrap().range(), 15..36);
 
 		// Numbers are fine, except at the start
 		let file_content = "Hi, my name is {{ 0a.1b }}!";
-		assert!(TEMPLATE_VARIABLE.captures(&file_content).is_none());
+		assert!(TEMPLATE_VARIABLE.captures(file_content).is_none());
 		let file_content = "Hi, my name is {{ a0.1b }}!";
-		assert!(TEMPLATE_VARIABLE.captures(&file_content).is_none());
+		assert!(TEMPLATE_VARIABLE.captures(file_content).is_none());
 		let file_content = "Hi, my name is {{ a0.b1 }}!";
-		let captures = TEMPLATE_VARIABLE.captures(&file_content).unwrap();
+		let captures = TEMPLATE_VARIABLE.captures(file_content).unwrap();
 		assert_eq!(&captures[1], "a0.b1");
 		assert_eq!(captures.get(0).unwrap().range(), 15..26);
 		let file_content = "Hi, my name is {{ a0.1 }}!";
-		let captures = TEMPLATE_VARIABLE.captures(&file_content).unwrap();
+		let captures = TEMPLATE_VARIABLE.captures(file_content).unwrap();
 		assert_eq!(&captures[1], "a0.1");
 		assert_eq!(captures.get(0).unwrap().range(), 15..25);
 		let file_content = "Hi, my name is {{ 0.1 }}!";
-		assert!(TEMPLATE_VARIABLE.captures(&file_content).is_none());
+		assert!(TEMPLATE_VARIABLE.captures(file_content).is_none());
 
 		// New lines, tabs, etc., are not fine
 		let file_content = r#"
@@ -323,6 +313,6 @@ mod tests {
 				name
 			}}!
 		"#;
-		assert!(TEMPLATE_VARIABLE.captures(&file_content).is_none());
+		assert!(TEMPLATE_VARIABLE.captures(file_content).is_none());
 	}
 }
