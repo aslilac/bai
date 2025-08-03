@@ -43,7 +43,5 @@ fn new_gleam_project() {
 	assert!(result.status.success());
 	let stdout = String::from_utf8_lossy(&result.stdout);
 
-	assert!(stdout.is_empty());
-
-	// fs::remove_dir_all(PATH).expect("cleanup successful test");
+	assert_eq!(stdout, "");
 }

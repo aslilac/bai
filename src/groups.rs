@@ -62,7 +62,7 @@ fn group_files_exist() {
 	use crate::parse_file_name;
 	use std::fs;
 
-	let groups = ["/foss", "/gleam", "/go", "/rs", "/ts", "/tsx"];
+	let groups = ["/oss", "/gleam", "/go", "/rs", "/ts", "/tsx"];
 	for group in groups {
 		let group = expand_group(group).unwrap();
 		let files = group.iter().map(|it| {

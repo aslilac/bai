@@ -22,7 +22,7 @@ static BASE: Lazy<reqwest::Url> = Lazy::new(|| {
 		.expect("invalid base URL")
 });
 
-const IDENT: Lazy<&str> = Lazy::new(|| include_str!("./ident.pcre").trim_end());
+static IDENT: Lazy<&str> = Lazy::new(|| include_str!("./ident.pcre").trim_end());
 static TEMPLATE_VARIABLE: Lazy<Regex> =
 	Lazy::new(|| Regex::new(&format!("\\{{\\{{ *{} *\\}}\\}}", *IDENT)).unwrap());
 static PATH_TEMPLATE_VARIABLE: Lazy<Regex> =
@@ -34,14 +34,14 @@ fn parse_file_name(file: &str) -> anyhow::Result<(&str, reqwest::Url)> {
 	let (file_path, tag) = file
 		.rsplit_once("@")
 		.map(|(file_path, tag)| (file_path, Some(tag.to_ascii_lowercase())))
-		.unwrap_or((&file, None));
+		.unwrap_or((file, None));
 
 	let mut base = BASE.clone();
 	if let Some(tag) = tag {
-		base = base.join(&format!("@{}/", tag))?;
+		base = base.join(&format!("@{tag}/"))?;
 	}
 
-	Ok((file_path, base.join(&file_path)?))
+	Ok((file_path, base.join(file_path)?))
 }
 
 async fn fetch_file<C>(file: &str, ctx: C) -> anyhow::Result<()>
@@ -60,10 +60,10 @@ where
 	let file_path = regext::for_each(&PATH_TEMPLATE_VARIABLE, file_path.to_string(), each);
 
 	// Create parent directories as necessary
-	if let Some(parent) = Path::new(&file_path).parent() {
-		if !parent.exists() {
-			fs::create_dir_all(parent)?;
-		}
+	if let Some(parent) = Path::new(&file_path).parent()
+		&& !parent.exists()
+	{
+		fs::create_dir_all(parent)?;
 	}
 	fs::write(file_path, file_content)?;
 
@@ -78,10 +78,13 @@ async fn main() -> anyhow::Result<()> {
 		aliases,
 	} = Options::try_from(&*env::args().skip(1).collect::<Vec<_>>())?;
 
-	let config = Config::load()?;
-	context.extend(config.context);
+	let mut config = Config::load()?;
+	// Copy context variables defined as arguments _over_ context variables loaded
+	// from the config file.
+	config.context.extend(context);
+	context = config.context;
 
-	if !context.contains_key(&"name".to_string()) {
+	if !context.contains_key("name") {
 		if let Some(dir) = env::current_dir()
 			.ok()
 			.and_then(|dir| dir.file_name().map(|name| name.to_os_string()))
@@ -89,27 +92,24 @@ async fn main() -> anyhow::Result<()> {
 			context.insert("name".to_string(), dir.to_string_lossy().to_string());
 		} else {
 			eprintln!(
-				"{} {}",
+				"{} name is unset, but is used by many templates",
 				"warning:".yellow(),
-				"name is unset, but is used by many templates"
 			);
 			eprintln!(
-				"{} {}\n    {}",
+				"{} try running:\n    bai [files...] -define \"name=my_project\"",
 				"fix:".green(),
-				"try running:",
-				"bai [files...] -define \"name=my_project\""
 			);
 		}
 	};
 
-	if !context.contains_key(&"git.branch".to_string()) {
+	if !context.contains_key("git.branch") {
 		let output = Command::new("git")
 			.args(["config", "init.defaultBranch"])
 			.output();
 		if let Ok(output) = output
 			&& output.status.success()
 		{
-			let stdout = String::from_utf8_lossy(&*output.stdout).trim().to_string();
+			let stdout = String::from_utf8_lossy(&output.stdout).trim().to_string();
 			context.insert("git.branch".to_string(), stdout);
 		} else {
 			// The command might fail if a value hasn't been set, but we should just
@@ -118,14 +118,14 @@ async fn main() -> anyhow::Result<()> {
 		}
 	};
 
-	if !context.contains_key(&"author.name".to_string()) {
+	if !context.contains_key("author.name") {
 		let output = Command::new("git").args(["config", "user.name"]).output();
 
 		if let Ok(output) = output
 			&& output.status.success()
 		{
 			// Ouch. Two allocations in one line.
-			let stdout = String::from_utf8_lossy(&*output.stdout).trim().to_string();
+			let stdout = String::from_utf8_lossy(&output.stdout).trim().to_string();
 			context.insert("author.name".to_string(), stdout);
 		} else {
 			eprintln!(
@@ -148,14 +148,14 @@ async fn main() -> anyhow::Result<()> {
 		}
 	};
 
-	if !context.contains_key(&"author.email".to_string()) {
+	if !context.contains_key("author.email") {
 		let output = Command::new("git").args(["config", "user.email"]).output();
 
 		if let Ok(output) = output
 			&& output.status.success()
 		{
 			// Ouch. Two allocations in one line.
-			let stdout = String::from_utf8_lossy(&*output.stdout).trim().to_string();
+			let stdout = String::from_utf8_lossy(&output.stdout).trim().to_string();
 			context.insert("author.email".to_string(), stdout);
 		} else {
 			eprintln!(
@@ -178,16 +178,14 @@ async fn main() -> anyhow::Result<()> {
 		}
 	};
 
-	if !context.contains_key(&"date.year".to_string()) {
+	if !context.contains_key("date.year") {
 		context.insert(
 			"date.year".to_string(),
 			chrono::Local::now().year().to_string(),
 		);
 	}
 
-	if context.contains_key(&"github.username".to_string())
-		&& !context.contains_key(&"github.owner".to_string())
-	{
+	if context.contains_key("github.username") && !context.contains_key("github.owner") {
 		context.insert(
 			"github.owner".to_string(),
 			context["github.username"].to_string(),
@@ -216,9 +214,9 @@ async fn main() -> anyhow::Result<()> {
 		}
 	}
 
-	if context.contains_key(&"author.name".to_string())
-		&& !context.contains_key(&"licence.owner".to_string())
-		&& !context.contains_key(&"license.owner".to_string())
+	if context.contains_key("author.name")
+		&& !context.contains_key("licence.owner")
+		&& !context.contains_key("license.owner")
 	{
 		context.insert(
 			"licence.owner".to_string(),
@@ -230,18 +228,14 @@ async fn main() -> anyhow::Result<()> {
 		);
 	}
 
-	if context.contains_key(&"license.owner".to_string())
-		&& !context.contains_key(&"licence.owner".to_string())
-	{
+	if context.contains_key("license.owner") && !context.contains_key("licence.owner") {
 		context.insert(
 			"licence.owner".to_string(),
 			context["license.owner"].to_string(),
 		);
 	}
 
-	if context.contains_key(&"licence.owner".to_string())
-		&& !context.contains_key(&"license.owner".to_string())
-	{
+	if context.contains_key("licence.owner") && !context.contains_key("license.owner") {
 		context.insert(
 			"license.owner".to_string(),
 			context["licence.owner"].to_string(),

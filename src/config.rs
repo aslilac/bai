@@ -71,7 +71,7 @@ impl Config {
 
 		let parent_exists = config_file.parent().map(Path::exists).unwrap_or(true);
 		if !parent_exists {
-			fs::create_dir_all(&config_file.parent().unwrap())?;
+			fs::create_dir_all(config_file.parent().unwrap())?;
 		}
 
 		config["context"].as_table_mut().unwrap().sort_values();

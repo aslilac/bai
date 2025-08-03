@@ -6,9 +6,9 @@ use std::collections::BTreeSet;
 use std::collections::HashMap;
 use std::process::exit;
 
+use crate::IDENT;
 use crate::config::Config;
 use crate::groups::expand_group;
-use crate::IDENT;
 
 static VARIABLE_NAME: Lazy<Regex> = Lazy::new(|| Regex::new(&format!("^{}$", *IDENT)).unwrap());
 
@@ -30,6 +30,11 @@ where
 	}
 }
 
+fn help() {
+	println!("{}", include_str!("./help.txt"));
+	exit(0);
+}
+
 impl<S> TryFrom<&[S]> for Options
 where
 	S: AsRef<str>,
@@ -37,12 +42,7 @@ where
 	type Error = anyhow::Error;
 
 	fn try_from(args: &[S]) -> Result<Self, Self::Error> {
-		let help = || {
-			println!("{}", include_str!("./help.txt"));
-			exit(0);
-		};
-
-		if args.len() == 0 {
+		if args.is_empty() {
 			help();
 		}
 
@@ -66,7 +66,7 @@ where
 		}
 
 		if matches!(args[0].as_ref(), "-set" | "--set") {
-			let definitions = args.into_iter().skip(1).filter_map(|definition| {
+			let definitions = args.iter().skip(1).filter_map(|definition| {
 				let definition = definition.as_ref();
 				let Some((key, value)) = definition.split_once('=') else {
 					eprintln!(
@@ -87,7 +87,7 @@ where
 			exit(0);
 		}
 
-		let mut args = args.into_iter();
+		let mut args = args.iter();
 		let mut files = Vec::new();
 		let mut context = HashMap::new();
 		let mut aliases = vec![];
@@ -133,7 +133,7 @@ where
 					aliases.push((alias.to_string(), canonical_name.to_string()));
 				}
 				_ => {
-					if (arg.len() >= 2 && arg.starts_with('-')) || arg.len() >= 3 && arg.starts_with("--") {
+					if arg.len() >= 2 && arg.starts_with('-') {
 						return Err(anyhow!("unrecognized option: {}", arg));
 					} else {
 						files.push(arg);
@@ -144,15 +144,11 @@ where
 
 		let files = files
 			.into_iter()
-			.map(|arg| {
+			.flat_map(|arg| {
 				if arg.starts_with("/") {
-					// TODO: use `inspect_err` and `unwrap_or_default` when that stabilizes
-					// https://github.com/rust-lang/rust/issues/91345
 					return expand_group(arg)
-						.unwrap_or_else(|err| {
-							eprintln!("{} {}", "warning:".yellow(), err);
-							Default::default()
-						})
+						.inspect_err(|err| eprintln!("{} {}", "warning:".yellow(), err))
+						.unwrap_or_default()
 						.iter()
 						.map(|s| s.to_string())
 						.collect();
@@ -160,7 +156,6 @@ where
 
 				vec![arg.to_string()]
 			})
-			.flatten()
 			.collect();
 
 		Ok(Options {
