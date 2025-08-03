@@ -1,8 +1,6 @@
 {
 	"private": true,
 	"name": "{{ name }}",
-	"version": "0.0.0",
-	"author": "{{ author.name }} <{{ author.email }}>",
 	"type": "module",
 	"dependencies": {
 		"lucide": "npm:lucide-react@^0.525.0",

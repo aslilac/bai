@@ -17,6 +17,9 @@
 			"types": "./build/index.d.ts"
 		}
 	},
+	"imports": {
+		"#./*.js": "./src/*.js"
+	},
 	"bin": {},
 	"files": [
 		"build/**"
@@ -24,15 +27,15 @@
 	"dependencies": {},
 	"devDependencies": {
 		"prettier": "~3.6.2",
-		"typescript": "~5.8.3",
+		"typescript": "~5.9.3",
 		"vitest": "^3.2.0"
 	},
 	"scripts": {
-		"build": "tsc -p tsconfig.build.json",
-		"dev": "tsc -p tsconfig.build.json -w",
+		"build": "tsc -b tsconfig.build.json",
+		"dev": "vitest",
 		"fmt": "prettier --write .",
-		"prepack": "$npm_execpath run build -s",
+		"prepare": "$npm_package_scripts_build",
 		"test": "vitest run",
-		"type-check": "tsc -p . --noEmit"
+		"type-check": "tsc -b . --noEmit"
 	}
 }

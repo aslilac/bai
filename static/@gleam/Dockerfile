@@ -1,11 +1,10 @@
-from ghcr.io/gleam-lang/gleam:v1.11.0-erlang-alpine
+FROM ghcr.io/gleam-lang/gleam:v1.11.0-erlang-alpine
 
-copy . /opt/app/
+COPY . /opt/app/
 
-workdir /opt/app/
-run gleam export erlang-shipment \
+WORKDIR /opt/app/
+RUN gleam export erlang-shipment \
 	&& mv ./build/erlang-shipment/ /opt/deploy/
 
-
-workdir /opt/deploy/
-cmd ["/opt/deploy/entrypoint.sh", "run"]
+WORKDIR /opt/deploy/
+CMD ["/opt/deploy/entrypoint.sh", "run"]

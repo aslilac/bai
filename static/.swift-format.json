@@ -13,7 +13,7 @@
 	"lineBreakBeforeControlFlowKeywords": false,
 	"lineBreakBeforeEachArgument": true,
 	"lineBreakBeforeEachGenericRequirement": false,
-	"lineLength": 100,
+	"lineLength": 80,
 	"maximumBlankLines": 1,
 	"prioritizeKeepingFunctionOutputTogether": false,
 	"respectsExistingLineBreaks": true,

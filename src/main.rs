@@ -102,10 +102,32 @@ async fn main() -> anyhow::Result<()> {
 		}
 	};
 
+	if !context.contains_key(&"git.branch".to_string()) {
+		let output = Command::new("git")
+			.args(["config", "init.defaultBranch"])
+			.output();
+		if let Ok(output) = output
+			&& output.status.success()
+		{
+			let stdout = String::from_utf8_lossy(&*output.stdout).trim().to_string();
+			context.insert("git.branch".to_string(), stdout);
+		} else {
+			// The command might fail if a value hasn't been set, but we should just
+			// gracefully fall back to Git's default.
+			context.insert("git.branch".to_string(), "master".to_string());
+		}
+	};
+
 	if !context.contains_key(&"author.name".to_string()) {
 		let output = Command::new("git").args(["config", "user.name"]).output();
 
-		let log_failure = || {
+		if let Ok(output) = output
+			&& output.status.success()
+		{
+			// Ouch. Two allocations in one line.
+			let stdout = String::from_utf8_lossy(&*output.stdout).trim().to_string();
+			context.insert("author.name".to_string(), stdout);
+		} else {
 			eprintln!(
 				"{} {}",
 				"warning:".yellow(),
@@ -123,29 +145,23 @@ async fn main() -> anyhow::Result<()> {
 				"author.name can also be inferred from git",
 				"git config --global user.name \"James Baxter\""
 			);
-		};
-
-		if let Ok(output) = output {
-			if output.status.success() {
-				// Ouch. Two allocations in one line.
-				let stdout = String::from_utf8_lossy(&*output.stdout).trim().to_string();
-				context.insert("author.name".to_string(), stdout);
-			} else {
-				log_failure();
-			}
-		} else {
-			log_failure();
 		}
 	};
 
 	if !context.contains_key(&"author.email".to_string()) {
 		let output = Command::new("git").args(["config", "user.email"]).output();
 
-		let log_failure = || {
+		if let Ok(output) = output
+			&& output.status.success()
+		{
+			// Ouch. Two allocations in one line.
+			let stdout = String::from_utf8_lossy(&*output.stdout).trim().to_string();
+			context.insert("author.email".to_string(), stdout);
+		} else {
 			eprintln!(
 				"{} {}",
 				"warning:".yellow(),
-				"author.email is currently unset, but is used by many templates"
+				"author.email is unset, but is used by many templates"
 			);
 			eprintln!(
 				"{} {}\n    {}",
@@ -157,20 +173,8 @@ async fn main() -> anyhow::Result<()> {
 				"{} {}\n    {}",
 				"fix:".green(),
 				"author.email can also be inferred from git",
-				"git config --global user.email \"James Baxter\""
+				"git config --global user.email \"jamesbaxter@hey.com\""
 			);
-		};
-
-		if let Ok(output) = output {
-			if output.status.success() {
-				// Ouch. Two allocations in one line.
-				let stdout = String::from_utf8_lossy(&*output.stdout).trim().to_string();
-				context.insert("author.email".to_string(), stdout);
-			} else {
-				log_failure();
-			}
-		} else {
-			log_failure();
 		}
 	};
 

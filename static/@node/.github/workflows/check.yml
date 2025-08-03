@@ -2,7 +2,7 @@ name: check
 
 on:
   push:
-    branches: ["main"]
+    branches: ["{{ git.branch }}"]
   pull_request:
     branches: ["**"]
 
@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: ["20", "22"]
+        node-version: ["22", "24"]
 
     runs-on: ubuntu-latest
 
@@ -24,16 +24,21 @@ jobs:
         name: Checkout
 
       - uses: actions/setup-node@v4
-        name: Prepare
+        name: Configure Node
         with:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
 
       - run: yarn
+        name: Install dependencies
 
       - run: yarn exec -- prettier --check .
-        if: ${{ matrix.node-version == '22' }}
+        name: Format
+        if: ${{ matrix.node-version == '24' }}
 
       - run: yarn type-check
+        name: Check types
+        if: ${{ matrix.node-version == '24' }}
 
       - run: yarn test
+        name: Test

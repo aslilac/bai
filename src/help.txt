@@ -1,7 +1,9 @@
 usage: bai [options] [/group...] [file...]
-       bai /gleam    create files for a Gleam project
-       bai /rust     create files for a Rust project
-       bai /ts       create files for a TypeScript project
+       bai /go       create files for a Go project
+       bai /gleam                    ...Gleam project
+       bai /react                    ...React project
+       bai /rust                     ...Rust project
+       bai /ts                       ...TypeScript project
 
   -h, --help          show this help message
   -v, --version       show version information

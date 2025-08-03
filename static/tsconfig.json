@@ -10,14 +10,12 @@
 		"moduleResolution": "node16",
 		"noEmitOnError": false,
 		"noFallthroughCasesInSwitch": true,
-		"noImplicitAny": true,
 		"noImplicitOverride": false,
 		"noImplicitReturns": true,
-		"noImplicitThis": true,
 		"noPropertyAccessFromIndexSignature": true,
 		"noUncheckedIndexedAccess": false,
 		"noUnusedLocals": true,
-		"noUnusedParameters": false,
+		"noUnusedParameters": true,
 		"outDir": "build/",
 		"preserveWatchOutput": true,
 		"sourceMap": true,
@@ -25,8 +23,7 @@
 		"target": "esnext",
 		"types": [],
 		"useDefineForClassFields": true,
-		"useUnknownInCatchVariables": true,
-		"verbatimModuleSyntax": true,
+		"verbatimModuleSyntax": true
 	},
 	"include": ["./src/**/*"]
 }

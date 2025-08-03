@@ -14,10 +14,10 @@ jobs:
         name: Checkout
 
       - uses: erlef/setup-beam@v1
-        name: Prepare
+        name: Configure Gleam
         with:
-          otp-version: "27.1"
-          gleam-version: "1.5"
+          otp-version: "28.0"
+          gleam-version: "1.12"
 
       - run: |
           version="v$(cat gleam.toml | grep -m 1 "version" | sed -r "s/version *= *\"([[:digit:].]+)\"/\1/")"
@@ -25,7 +25,7 @@ jobs:
             echo "tag ${{ github.ref_name }} does not match version $version in gleam.toml"
             exit 1
           fi
-        name: Version
+        name: Verify version
 
       - run: gleam test
         name: Test

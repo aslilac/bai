@@ -2,7 +2,7 @@ name: check
 
 on:
   push:
-    branches: ["main"]
+    branches: ["{{ git.branch }}"]
   pull_request:
     branches: ["**"]
 
@@ -19,10 +19,10 @@ jobs:
         name: Checkout
 
       - uses: erlef/setup-beam@v1
-        name: Prepare
+        name: Configure Gleam
         with:
-          otp-version: "27.1"
-          gleam-version: "1.5"
+          otp-version: "28.0"
+          gleam-version: "1.12"
 
       - run: gleam format --check
         name: Format
