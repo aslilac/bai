@@ -24,9 +24,7 @@ jobs:
         name: Spellcheck
 
       - uses: actions/setup-go@v5
-        name: Prepare
-        with:
-          go-version: ^{{ go.version }}
+        name: Configure Go
 
       - run: |
           go fmt ./...
