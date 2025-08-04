@@ -17,5 +17,5 @@ bai LICENSE-MIT # Just use a single template file. Note that this will get
 # Most templates use variables which will be filled in automatically based on
 # the current directory, your Git configuration, and other such "system state".
 # Defaults try to be sensible, but all of these variables can also be set manually!
-bai Cargo.toml -define name="coolest_new_crate"
+bai Cargo.toml -define name=coolest_new_crate
 ```
