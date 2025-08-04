@@ -1,4 +1,4 @@
-name: check
+name: Check
 
 on:
   push:
@@ -11,17 +11,22 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  check:
+  conformance:
+    name: Conformance
+
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
         name: Checkout
 
+      - uses: crate-ci/typos@v1
+        name: Spellcheck
+
       - uses: actions/setup-go@v5
         name: Prepare
         with:
-          go-version: ^1.22
+          go-version: ^{{ go.version }}
 
       - run: |
           go fmt ./...
@@ -31,5 +36,5 @@ jobs:
       - run: go vet ./...
         name: Lint
 
-      - run: go test
+      - run: go test ./...
         name: Test

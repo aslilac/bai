@@ -1,4 +1,4 @@
-name: release
+name: Release
 
 on:
   push:
@@ -6,8 +6,9 @@ on:
 
 jobs:
   publish:
+    name: Publish
+
     runs-on: ubuntu-latest
-    name: Check
 
     steps:
       - uses: actions/checkout@v4
@@ -62,8 +63,10 @@ jobs:
             target: x86_64-apple-darwin
             executable: bai
 
+    name: Package.${{ matrix.release.target }}
+
     runs-on: ${{ matrix.release.os }}
-    name: ${{ matrix.release.target }}
+
     needs:
       - publish
 

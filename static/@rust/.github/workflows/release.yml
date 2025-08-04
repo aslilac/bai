@@ -1,4 +1,4 @@
-name: release
+name: Release
 
 on:
   push:
@@ -7,6 +7,8 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+
+    name: Publish
 
     steps:
       - uses: actions/checkout@v4
@@ -19,6 +21,9 @@ jobs:
             exit 1
           fi
         name: Verify version
+
+      - uses: dtolnay/rust-toolchain@stable
+        name: Configure Rust
 
       - run: cargo test
         name: Test
@@ -43,7 +48,7 @@ jobs:
 
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            executable: { { name } }
+            executable: {{ name }}
 
           - os: windows-latest
             target: aarch64-pc-windows-msvc
@@ -55,15 +60,15 @@ jobs:
 
           - os: macos-latest
             target: aarch64-apple-darwin
-            executable: { { name } }
+            executable: {{ name }}
 
           - os: macos-latest
             target: x86_64-apple-darwin
-            executable: { { name } }
+            executable: {{ name }}
+
+    name: Package.${{ matrix.release.target }}
 
     runs-on: ${{ matrix.release.os }}
-
-    name: package.${{ matrix.release.target }}
 
     needs:
       - publish
@@ -72,8 +77,10 @@ jobs:
       - uses: actions/checkout@v4
         name: Checkout
 
-      - run: rustup target add ${{ matrix.release.target }}
+      - uses: dtolnay/rust-toolchain@stable
         name: Configure Rust
+        with:
+          target: ${{ matrix.release.target }}
 
       - run: cargo build --target ${{ matrix.release.target }} --release
         name: Build

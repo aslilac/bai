@@ -1,4 +1,4 @@
-name: release
+name: Release
 
 on:
   push:
@@ -6,8 +6,9 @@ on:
 
 jobs:
   publish:
+    name: Publish
+
     runs-on: ubuntu-latest
-    name: hex.pm
 
     steps:
       - uses: actions/checkout@v4
