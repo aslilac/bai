@@ -1,4 +1,4 @@
-name: check
+name: Check
 
 on:
   push:
@@ -11,32 +11,15 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-        name: Checkout
-
-      - uses: actions/cache@v4
-        name: Configure cache
-        with:
-          path: |
-            ~/.cargo/git/
-            ~/.cargo/registry/
-            build/
-          key: cargo-${{ github.workflow }}-${{ github.job }}-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: cargo-${{ github.workflow }}-${{ github.job }}-
-
-      - run: cargo test
-        name: Test
-
   check:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
         name: Checkout
+
+      - uses: crate-ci/typos@v1
+        name: Spellcheck
 
       - uses: actions/cache@v4
         name: Configure cache
@@ -53,3 +36,6 @@ jobs:
 
       - run: cargo clippy
         name: Lint
+
+      - run: cargo test
+        name: Test
