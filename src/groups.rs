@@ -70,7 +70,7 @@ fn group_files_exist() {
 					.unwrap()
 					.1
 					.path()
-					.strip_prefix("/aslilac/bai/main/")
+					.strip_prefix("/aslilac/bai/trunk/")
 					.unwrap()
 					.to_owned(),
 			)
