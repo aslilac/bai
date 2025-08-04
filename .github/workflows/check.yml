@@ -2,7 +2,7 @@ name: check
 
 on:
   push:
-    branches: ["main"]
+    branches: ["trunk"]
   pull_request:
     branches: ["**"]
 
@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  check:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,13 +19,14 @@ jobs:
         name: Checkout
 
       - uses: actions/cache@v4
-        name: Cache
+        name: Configure cache
         with:
           path: |
-            ~/.cargo/
-            ./build/
-          key: test-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: test-cargo-
+            ~/.cargo/git/
+            ~/.cargo/registry/
+            build/
+          key: cargo-${{ github.workflow }}-${{ github.job }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: cargo-${{ github.workflow }}-${{ github.job }}-
 
       - run: cargo test
         name: Test
@@ -38,13 +39,14 @@ jobs:
         name: Checkout
 
       - uses: actions/cache@v4
-        name: Cache
+        name: Configure cache
         with:
           path: |
-            ~/.cargo/
-            ./build/
-          key: lint-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: lint-cargo-
+            ~/.cargo/git/
+            ~/.cargo/registry/
+            build/
+          key: cargo-${{ github.workflow }}-${{ github.job }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: cargo-${{ github.workflow }}-${{ github.job }}-
 
       - run: cargo fmt -- --check
         name: Format

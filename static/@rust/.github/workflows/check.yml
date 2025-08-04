@@ -22,10 +22,11 @@ jobs:
         name: Configure cache
         with:
           path: |
-            ~/.cargo/
-            ./build/
-          key: test-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: test-cargo-
+            ~/.cargo/git/
+            ~/.cargo/registry/
+            build/
+          key: cargo-${{ github.workflow }}-${{ github.job }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: cargo-${{ github.workflow }}-${{ github.job }}-
 
       - run: cargo test
         name: Test
@@ -41,10 +42,11 @@ jobs:
         name: Configure cache
         with:
           path: |
-            ~/.cargo/
-            ./build/
-          key: lint-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: lint-cargo-
+            ~/.cargo/git/
+            ~/.cargo/registry/
+            build/
+          key: cargo-${{ github.workflow }}-${{ github.job }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: cargo-${{ github.workflow }}-${{ github.job }}-
 
       - run: cargo fmt -- --check
         name: Format

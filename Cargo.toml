@@ -1,6 +1,6 @@
 [package]
 name = "bai"
-version = "1.0.2"
+version = "1.0.3"
 authors = ["McKayla Washburn <mckayla@hey.com>"]
 description = "Create common files from a large collection of templates"
 keywords = []

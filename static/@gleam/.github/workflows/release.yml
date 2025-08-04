@@ -13,12 +13,6 @@ jobs:
       - uses: actions/checkout@v4
         name: Checkout
 
-      - uses: erlef/setup-beam@v1
-        name: Configure Gleam
-        with:
-          otp-version: "28.0"
-          gleam-version: "1.12"
-
       - run: |
           version="v$(cat gleam.toml | grep -m 1 "version" | sed -r "s/version *= *\"([[:digit:].]+)\"/\1/")"
           if [ "$version" != "${{ github.ref_name }}" ]; then
@@ -26,6 +20,12 @@ jobs:
             exit 1
           fi
         name: Verify version
+
+      - uses: erlef/setup-beam@v1
+        name: Configure Gleam
+        with:
+          otp-version: "28.0"
+          gleam-version: "1.12"
 
       - run: gleam test
         name: Test

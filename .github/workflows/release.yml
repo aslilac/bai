@@ -5,7 +5,7 @@ on:
     tags: ["v*.*.*"]
 
 jobs:
-  check:
+  publish:
     runs-on: ubuntu-latest
     name: Check
 
@@ -21,43 +21,18 @@ jobs:
           fi
         name: Version
 
-      - uses: actions/cache@v4
-        name: Cache
-        with:
-          path: |
-            ~/.cargo/
-            ./build/
-          key: publish-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: publish-cargo-
-
       - run: cargo test
         name: Test
-
-  publish:
-    runs-on: ubuntu-latest
-    name: crates.io
-    needs:
-      - check
-
-    steps:
-      - uses: actions/checkout@v4
-        name: Checkout
-
-      - uses: actions/cache@v4
-        name: Cache
-        with:
-          path: |
-            ~/.cargo/
-            ./build/
-          key: publish-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: publish-cargo-
 
       - run: cargo publish
         name: Publish
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
-  release:
+      - uses: softprops/action-gh-release@v1
+        name: Release
+
+  package:
     strategy:
       fail-fast: false
       matrix:
@@ -90,41 +65,35 @@ jobs:
     runs-on: ${{ matrix.release.os }}
     name: ${{ matrix.release.target }}
     needs:
-      - check
+      - publish
 
     steps:
       - uses: actions/checkout@v4
         name: Checkout
 
-      - uses: actions/cache@v4
-        name: Cache
-        with:
-          path: |
-            ~/.cargo/
-            ./build/
-          key: release-${{ matrix.release.target }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: release-${{ matrix.release.target }}-cargo-
-
       - run: rustup target add ${{ matrix.release.target }}
-        name: Prepare — ${{ matrix.release.target }}
+        name: Configure Rust
 
       - run: cargo build --target ${{ matrix.release.target }} --release
-        name: Build — ${{ matrix.release.target }}
+        name: Build
+
+      - run: mkdir dist/
+        name: Prepare for packaging
 
       # Create .tar.gz files for Linux and macOS
-      - run: tar -a -cf bai-${{ github.ref_name }}-${{ matrix.release.target }}.tar.gz ${{ matrix.release.executable }}
+      - run: tar -a -cf ../../../dist/bai-${{ github.ref_name }}-${{ matrix.release.target }}.tar.gz ${{ matrix.release.executable }}
         name: Package (tar) — ${{ matrix.release.target }}
         working-directory: ./build/${{ matrix.release.target }}/release/
         if: ${{ !startsWith(matrix.release.os, 'windows') }}
 
       # Create .zip files for Linux and macOS
-      - run: zip -r bai-${{ github.ref_name }}-${{ matrix.release.target }}.zip ${{ matrix.release.executable }}
-        name: Package (zip) — ${{ matrix.release.target }}
+      - run: zip -r ../../../dist/bai-${{ github.ref_name }}-${{ matrix.release.target }}.zip ${{ matrix.release.executable }}
+        name: Package (zip) — ${{ matrix.reclease.target }}
         working-directory: ./build/${{ matrix.release.target }}/release/
         if: ${{ !startsWith(matrix.release.os, 'windows') }}
 
       # Create .zip files for Windows
-      - run: Compress-Archive ${{ matrix.release.executable }} -DestinationPath bai-${{ github.ref_name }}-${{ matrix.release.target }}.zip
+      - run: Compress-Archive ${{ matrix.release.executable }} -DestinationPath ../../../dist/bai-${{ github.ref_name }}-${{ matrix.release.target }}.zip
         name: Package (zip) — ${{ matrix.release.target }}
         working-directory: ./build/${{ matrix.release.target }}/release/
         if: ${{ startsWith(matrix.release.os, 'windows') }}
@@ -133,9 +102,4 @@ jobs:
       - uses: softprops/action-gh-release@v1
         name: Publish
         with:
-          files: ./build/${{ matrix.release.target }}/release/bai-${{ github.ref_name }}-${{ matrix.release.target }}.*
-
-      # We don't want the archives to be stored in the cache of the build directory
-      - run: rm bai-${{ github.ref_name }}-${{ matrix.release.target }}.*
-        name: Cleanup
-        working-directory: ./build/${{ matrix.release.target }}/release/
+          files: ./dist/bai-${{ github.ref_name }}-${{ matrix.release.target }}.*
