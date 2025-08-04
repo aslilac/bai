@@ -18,7 +18,7 @@ use config::Config;
 use options::Options;
 
 static BASE: Lazy<reqwest::Url> = Lazy::new(|| {
-	reqwest::Url::parse("https://raw.githubusercontent.com/aslilac/bai/main/static/")
+	reqwest::Url::parse("https://raw.githubusercontent.com/aslilac/bai/trunk/static/")
 		.expect("invalid base URL")
 });
 
