@@ -6,7 +6,9 @@ fn with_common_files(other_files: &[&'static str]) -> Vec<&'static str> {
 	[COMMON_FILES, other_files].concat()
 }
 
-pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<Vec<&'static str>> {
+pub fn expand_group<S: AsRef<str>>(
+	group: S,
+) -> anyhow::Result<Vec<&'static str>> {
 	match group.as_ref() {
 		// Project templates
 		"/gleam" => Ok(with_common_files(&[
@@ -16,11 +18,7 @@ pub fn expand_group<S: AsRef<str>>(group: S) -> anyhow::Result<Vec<&'static str>
 			"test/$$name$$_test.gleam",
 			"test/$$name$$/example_test.gleam",
 		])),
-		"/go" => Ok(with_common_files(&[
-			"go.mod",
-			"main.go",
-			"staticcheck.conf",
-		])),
+		"/go" => Ok(with_common_files(&["go.mod", "main.go", "staticcheck.conf"])),
 		"/rs" | "/rust" => Ok(with_common_files(&[
 			".cargo/config.toml",
 			".rustfmt.toml",

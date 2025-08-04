@@ -10,7 +10,8 @@ use crate::IDENT;
 use crate::config::Config;
 use crate::groups::expand_group;
 
-static VARIABLE_NAME: Lazy<Regex> = Lazy::new(|| Regex::new(&format!("^{}$", *IDENT)).unwrap());
+static VARIABLE_NAME: Lazy<Regex> =
+	Lazy::new(|| Regex::new(&format!("^{}$", *IDENT)).unwrap());
 
 #[derive(Clone, Debug)]
 pub struct Options {
@@ -127,9 +128,9 @@ where
 					VARIABLE_NAME
 						.find_at(alias, 0)
 						.ok_or_else(|| anyhow!("alias \"{}\" is invalid", alias))?;
-					VARIABLE_NAME
-						.find_at(canonical_name, 0)
-						.ok_or_else(|| anyhow!("canonical name \"{}\" is invalid", canonical_name))?;
+					VARIABLE_NAME.find_at(canonical_name, 0).ok_or_else(|| {
+						anyhow!("canonical name \"{}\" is invalid", canonical_name)
+					})?;
 					aliases.push((alias.to_string(), canonical_name.to_string()));
 				}
 				_ => {
@@ -158,11 +159,7 @@ where
 			})
 			.collect();
 
-		Ok(Options {
-			files,
-			context,
-			aliases,
-		})
+		Ok(Options { files, context, aliases })
 	}
 }
 

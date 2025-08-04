@@ -16,11 +16,7 @@ pub struct Config {
 
 impl Config {
 	pub fn file_path() -> anyhow::Result<PathBuf> {
-		Ok(
-			etcetera::choose_base_strategy()?
-				.config_dir()
-				.join("bai.toml"),
-		)
+		Ok(etcetera::choose_base_strategy()?.config_dir().join("bai.toml"))
 	}
 
 	pub fn init() -> anyhow::Result<Self> {
@@ -33,11 +29,15 @@ impl Config {
 		let github_username = buf.trim().to_string();
 
 		if !github_username.is_empty() {
-			Self::set_context([("github.username", &github_username)]).expect("failed to update config");
+			Self::set_context([("github.username", &github_username)])
+				.expect("failed to update config");
 		}
 
 		Ok(Config {
-			context: HashMap::from([("github.username".to_string(), github_username)]),
+			context: HashMap::from([(
+				"github.username".to_string(),
+				github_username,
+			)]),
 		})
 	}
 
@@ -47,7 +47,8 @@ impl Config {
 			return Self::init();
 		}
 
-		let config = toml::from_str(&fs::read_to_string(&config_file).unwrap_or_default())?;
+		let config =
+			toml::from_str(&fs::read_to_string(&config_file).unwrap_or_default())?;
 		Ok(config)
 	}
 

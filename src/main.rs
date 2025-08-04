@@ -18,11 +18,14 @@ use config::Config;
 use options::Options;
 
 static BASE: Lazy<reqwest::Url> = Lazy::new(|| {
-	reqwest::Url::parse("https://raw.githubusercontent.com/aslilac/bai/trunk/static/")
-		.expect("invalid base URL")
+	reqwest::Url::parse(
+		"https://raw.githubusercontent.com/aslilac/bai/trunk/static/",
+	)
+	.expect("invalid base URL")
 });
 
-static IDENT: Lazy<&str> = Lazy::new(|| include_str!("./ident.pcre").trim_end());
+static IDENT: Lazy<&str> =
+	Lazy::new(|| include_str!("./ident.pcre").trim_end());
 static TEMPLATE_VARIABLE: Lazy<Regex> =
 	Lazy::new(|| Regex::new(&format!("\\{{\\{{ *{} *\\}}\\}}", *IDENT)).unwrap());
 static PATH_TEMPLATE_VARIABLE: Lazy<Regex> =
@@ -52,12 +55,14 @@ where
 	let (file_path, url) = parse_file_name(file)?;
 
 	// Fetch file
-	let file_content = reqwest::get(url).await?.error_for_status()?.text().await?;
+	let file_content =
+		reqwest::get(url).await?.error_for_status()?.text().await?;
 
 	let each = |captures: &regex::Captures| ctx.get(&captures[1]);
 	// Fill in template variables
 	let file_content = regext::for_each(&TEMPLATE_VARIABLE, file_content, each);
-	let file_path = regext::for_each(&PATH_TEMPLATE_VARIABLE, file_path.to_string(), each);
+	let file_path =
+		regext::for_each(&PATH_TEMPLATE_VARIABLE, file_path.to_string(), each);
 
 	// Create parent directories as necessary
 	if let Some(parent) = Path::new(&file_path).parent()
@@ -72,11 +77,8 @@ where
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-	let Options {
-		files,
-		mut context,
-		aliases,
-	} = Options::try_from(&*env::args().skip(1).collect::<Vec<_>>())?;
+	let Options { files, mut context, aliases } =
+		Options::try_from(&*env::args().skip(1).collect::<Vec<_>>())?;
 
 	let mut config = Config::load()?;
 	// Copy context variables defined as arguments _over_ context variables loaded
@@ -103,9 +105,8 @@ async fn main() -> anyhow::Result<()> {
 	};
 
 	if !context.contains_key("git.branch") {
-		let output = Command::new("git")
-			.args(["config", "init.defaultBranch"])
-			.output();
+		let output =
+			Command::new("git").args(["config", "init.defaultBranch"]).output();
 		if let Ok(output) = output
 			&& output.status.success()
 		{
@@ -169,13 +170,13 @@ async fn main() -> anyhow::Result<()> {
 	};
 
 	if !context.contains_key("date.year") {
-		context.insert(
-			"date.year".to_string(),
-			chrono::Local::now().year().to_string(),
-		);
+		context
+			.insert("date.year".to_string(), chrono::Local::now().year().to_string());
 	}
 
-	if context.contains_key("github.username") && !context.contains_key("github.owner") {
+	if context.contains_key("github.username")
+		&& !context.contains_key("github.owner")
+	{
 		context.insert(
 			"github.owner".to_string(),
 			context["github.username"].to_string(),
@@ -208,24 +209,24 @@ async fn main() -> anyhow::Result<()> {
 		&& !context.contains_key("licence.owner")
 		&& !context.contains_key("license.owner")
 	{
-		context.insert(
-			"licence.owner".to_string(),
-			context["author.name"].to_string(),
-		);
-		context.insert(
-			"license.owner".to_string(),
-			context["author.name"].to_string(),
-		);
+		context
+			.insert("licence.owner".to_string(), context["author.name"].to_string());
+		context
+			.insert("license.owner".to_string(), context["author.name"].to_string());
 	}
 
-	if context.contains_key("license.owner") && !context.contains_key("licence.owner") {
+	if context.contains_key("license.owner")
+		&& !context.contains_key("licence.owner")
+	{
 		context.insert(
 			"licence.owner".to_string(),
 			context["license.owner"].to_string(),
 		);
 	}
 
-	if context.contains_key("licence.owner") && !context.contains_key("license.owner") {
+	if context.contains_key("licence.owner")
+		&& !context.contains_key("license.owner")
+	{
 		context.insert(
 			"license.owner".to_string(),
 			context["licence.owner"].to_string(),
