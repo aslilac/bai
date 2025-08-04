@@ -78,10 +78,7 @@ fn group_files_exist() {
 			)
 		});
 		for (name, path) in files {
-			assert!(
-				fs::exists(&path).unwrap(),
-				"missing file {name} at {path}"
-			);
+			assert!(fs::exists(&path).unwrap(), "missing file {name} at {path}");
 		}
 	}
 }
