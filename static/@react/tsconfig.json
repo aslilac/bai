@@ -2,7 +2,6 @@
 	"compilerOptions": {
 		"allowArbitraryExtensions": true,
 		"allowImportingTsExtensions": true,
-		"declaration": false,
 		"erasableSyntaxOnly": true,
 		"exactOptionalPropertyTypes": false,
 		"forceConsistentCasingInFileNames": true,
@@ -20,7 +19,6 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"preserveWatchOutput": true,
-		"sourceMap": true,
 		"strict": true,
 		"target": "esnext",
 		"types": ["react", "react-dom", "vite/client"],
