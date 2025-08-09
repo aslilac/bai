@@ -3,6 +3,9 @@ version = "0.0.0"
 licences = ["MIT"]
 description = ""
 repository = { type = "github", user = "{{ github.owner }}", repo = "{{ name }}" }
+links = [
+	{ title = "Homepage", href = "https://{{ author.homepage }}/{{ name }}" },
+]
 gleam = ">= 1.12.0"
 
 [dependencies]

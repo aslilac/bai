@@ -5,7 +5,7 @@
 	"description": "",
 	"keywords": [],
 	"license": "MIT",
-	"homepage": "https://mckay.la/{{ name }}",
+	"homepage": "https://{{ author.homepage }}/{{ name }}",
 	"repository": "https://github.com/{{ github.owner }}/{{ name }}",
 	"bugs": "https://github.com/{{ github.owner }}/{{ name }}/issues",
 	"type": "module",

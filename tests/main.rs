@@ -26,7 +26,7 @@ static DEFAULT_DEFINES: &[&str] = &[
 ];
 
 #[test]
-#[ignore = "doesn't work in ci because config file isn't initialized"]
+#[ignore = "doesn't work in ci because it requires the gleam cli"]
 fn new_gleam_project() {
 	setup::before();
 	const PATH: &str = "./tests/testdata/gleam_project/";
@@ -45,10 +45,29 @@ fn new_gleam_project() {
 	let stdout = String::from_utf8_lossy(&result.stdout);
 
 	assert_eq!(stdout, "");
+
+	assert!(
+		Command::new("gleam")
+			.args(["format", "--check"])
+			.current_dir(PATH)
+			.output()
+			.unwrap()
+			.status
+			.success()
+	);
+
+	assert!(
+		Command::new("gleam")
+			.arg("test")
+			.current_dir(PATH)
+			.output()
+			.unwrap()
+			.status
+			.success()
+	);
 }
 
 #[test]
-#[ignore = "doesn't work in ci because config file isn't initialized"]
 fn new_react_project() {
 	setup::before();
 	const PATH: &str = "./tests/testdata/react_project/";
@@ -70,7 +89,6 @@ fn new_react_project() {
 }
 
 #[test]
-#[ignore = "doesn't work in ci because config file isn't initialized"]
 fn new_typescript_project() {
 	setup::before();
 	const PATH: &str = "./tests/testdata/typescript_project/";
@@ -92,7 +110,6 @@ fn new_typescript_project() {
 }
 
 #[test]
-#[ignore = "doesn't work in ci because config file isn't initialized"]
 fn new_rust_project() {
 	setup::before();
 	const PATH: &str = "./tests/testdata/rust_project/";
@@ -111,6 +128,26 @@ fn new_rust_project() {
 	let stdout = String::from_utf8_lossy(&result.stdout);
 
 	assert_eq!(stdout, "");
+
+	assert!(
+		Command::new("cargo")
+			.args(["fmt", "--", "--check"])
+			.current_dir(PATH)
+			.output()
+			.unwrap()
+			.status
+			.success()
+	);
+
+	assert!(
+		Command::new("cargo")
+			.arg("clippy")
+			.current_dir(PATH)
+			.output()
+			.unwrap()
+			.status
+			.success()
+	);
 
 	assert!(
 		Command::new("cargo")

@@ -183,6 +183,15 @@ async fn main() -> anyhow::Result<()> {
 		);
 	}
 
+	if context.contains_key("github.owner")
+		&& !context.contains_key("author.homepage")
+	{
+		context.insert(
+			"author.homepage".to_string(),
+			format!("{}.github.io", context["github.owner"]),
+		);
+	}
+
 	for (alias, canonical_name) in aliases {
 		if context.contains_key(&canonical_name) {
 			if !context.contains_key(&alias) {

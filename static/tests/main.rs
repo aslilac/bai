@@ -1,8 +1,15 @@
+use std::path::Path;
+use std::path::PathBuf;
 use std::process::Command;
+use std::sync::LazyLock;
 
 mod setup;
 
-const EXE: &str = "./build/release/{{ name }}";
+static EXE: LazyLock<PathBuf> = LazyLock::new(|| {
+	Path::new("./build/release/bai")
+		.canonicalize()
+		.expect("unable to canonicalize path")
+});
 
 #[test]
 fn hello() {

@@ -4,11 +4,12 @@ use serde::Serialize;
 use std::collections::HashMap;
 use std::fs;
 use std::io;
+use std::io::IsTerminal;
 use std::io::Write;
 use std::path::Path;
 use std::path::PathBuf;
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct Config {
 	#[serde(default, skip_serializing_if = "HashMap::is_empty")]
 	pub context: HashMap<String, String>,
@@ -20,8 +21,12 @@ impl Config {
 	}
 
 	pub fn init() -> anyhow::Result<Self> {
-		let mut buf = String::with_capacity(100);
 		let stdin = io::stdin();
+		if !stdin.is_terminal() {
+			return Ok(Default::default());
+		}
+
+		let mut buf = String::with_capacity(100);
 		let mut stdout = io::stdout();
 		write!(stdout, "github.username? ")?;
 		stdout.flush().unwrap();
