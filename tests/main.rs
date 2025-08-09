@@ -26,7 +26,7 @@ static DEFAULT_DEFINES: &[&str] = &[
 ];
 
 #[test]
-#[ignore = "doesn't work in ci because it requires the gleam cli"]
+#[ignore = "requires the gleam cli"]
 fn new_gleam_project() {
 	setup::before();
 	const PATH: &str = "./tests/testdata/gleam_project/";
