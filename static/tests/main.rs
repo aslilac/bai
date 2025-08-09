@@ -6,7 +6,7 @@ use std::sync::LazyLock;
 mod setup;
 
 static EXE: LazyLock<PathBuf> = LazyLock::new(|| {
-	Path::new("./build/release/bai")
+	Path::new("./build/release/{{ name }}")
 		.canonicalize()
 		.expect("unable to canonicalize path")
 });
