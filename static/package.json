@@ -9,20 +9,17 @@
 	"repository": "https://github.com/{{ github.owner }}/{{ name }}",
 	"bugs": "https://github.com/{{ github.owner }}/{{ name }}/issues",
 	"type": "module",
-	"main": "./build/index.js",
-	"types": "./build/index.d.ts",
+	"main": "./.build/index.js",
+	"types": "./.build/index.d.ts",
 	"exports": {
 		".": {
-			"import": "./build/index.js",
-			"types": "./build/index.d.ts"
+			"import": "./.build/index.js",
+			"types": "./.build/index.d.ts"
 		}
-	},
-	"imports": {
-		"#./*.js": "./src/*.js"
 	},
 	"bin": {},
 	"files": [
-		"build/**"
+		".build/**"
 	],
 	"dependencies": {},
 	"devDependencies": {

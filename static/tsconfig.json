@@ -16,14 +16,14 @@
 		"noUncheckedIndexedAccess": false,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		"outDir": "build/",
+		"outDir": ".build/",
 		"preserveWatchOutput": true,
 		"sourceMap": true,
 		"strict": true,
 		"target": "esnext",
 		"types": [],
 		"useDefineForClassFields": true,
-		"verbatimModuleSyntax": true
+		"verbatimModuleSyntax": true,
 	},
-	"include": ["./src/**/*"]
+	"include": ["./src/**/*"],
 }

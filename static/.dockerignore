@@ -3,11 +3,10 @@
 **/.idea
 **/.nova
 **/.vscode
+**/.zed
+**/.build
 **/build
-**/coverage
 **/dist
 **/node_modules
-**/target
 **/*.log
 **/*.tsbuildinfo
-fly.toml

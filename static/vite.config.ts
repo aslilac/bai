@@ -11,7 +11,7 @@ export default {
 	],
 	build: {
 		emptyOutDir: true,
-		outDir: "../build/",
+		outDir: "../.build/",
 		target: "es2022",
 	},
 } satisfies import("vite").UserConfig;

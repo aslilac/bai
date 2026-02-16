@@ -1,6 +1,4 @@
 Makefile  -linguist-detectable
 *.mk  -linguist-detectable
 *.sh  -linguist-detectable
-*.config.js  -linguist-detectable
-*.config.mjs  -linguist-detectable
-*.config.ts  -linguist-detectable
+*.config.*  -linguist-detectable
